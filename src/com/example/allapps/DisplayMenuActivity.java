@@ -108,7 +108,8 @@ public class DisplayMenuActivity extends Activity
 			//Get previous Intent
 			Intent previous = getIntent();
 			
-			if(previous.getStringExtra("Meal Id") != null){
+			if(previous.getStringExtra("Meal Id") != null)
+			{
 			//Store Meal Id from previous intent into a String variable
 			id = previous.getStringExtra("Meal Id");
 			
@@ -117,7 +118,8 @@ public class DisplayMenuActivity extends Activity
 			startDisplay(urlString);
 			}
 			//Make sure that this gets thrown to our catch block
-			else{
+			else
+			{
 			   throw new Exception();
 			}
 		}
@@ -163,9 +165,17 @@ public class DisplayMenuActivity extends Activity
        {
 
           Log.i("ON", String.valueOf(Microinteractions.on));
-          openOptionsMenu();
+          //openOptionsMenu(); See onAttachedToWindow
        }
 	}
+	
+	//This method was found on Stack Overflow as a possible solution to the problem of opening the options menu from onCreate.
+	@Override
+    public void onAttachedToWindow() 
+    {
+  	    super.onAttachedToWindow();
+  	    openOptionsMenu();
+    }
 	
 	//This method creates a date string using the current month, day, and year, and assembles them in a format that can be used
 	//in the assembly of a menu URL.
