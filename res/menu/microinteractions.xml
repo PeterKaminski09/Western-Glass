@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.allapps.Microinteractions" >
+
+    <item
+        android:id="@+id/on"
+        android:showAsAction="never"
+        android:title="@string/micro_on"/>
+    
+    <item
+        android:id="@+id/off"
+        android:showAsAction="never"
+        android:title="@string/micro_off"/>
+
+</menu>

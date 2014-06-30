@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">All Apps</string>
+    <string name="voice_command_open_app">show WKU</string>
+    <string name="start_prompt"> What would you like to see? </string>
+    <string name="new_directions"> New Directions </string>
+    <string name="settings"> Settings </string>
+    <string name="direction_prompt">Where would you like to go?</string>
+    <string name="computer_prompt">What type of computer are you looking for? \nPC \nMac </string>
+    <string name="title_activity_directions">DirectionsActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="tap_for_options"> Tap for options </string>
+    <string name="empty_string"></string>
+    <string name="breakfast_label">Breakfast</string>
+    <string name="brunch_label">Brunch</string>
+    <string name="lunch_label">Lunch</string>
+    <string name="dinner_label">Dinner</string>
+    <string name="refresh_label">Refresh</string>
+    <string name="lab_menu_label">Computer Lab Main Menu</string>
+    <string name="see_mac_vacancy">See Mac Vacancies</string>
+    <string name="see_pc_vacancy">See PC Vacancies</string>
+    <string name="wku_menu_label">WKU Main Menu</string>
+    <string name="title_activity_fresh_menu_settings">FreshMenuSettings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_facility_hours">FacilityHoursActivity</string>
+    <string name="title_activity_meal_plans">MealPlans</string>
+    <string name="title_activity_microinteractions">Microinteractions</string>
+    <string name="micro_on">On</string>
+    <string name="micro_off">Off</string>
+
+</resources>

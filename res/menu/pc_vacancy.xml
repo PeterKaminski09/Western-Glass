@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.allapps.ShowVacancyActivity" >
+
+    <item
+        android:id="@+id/refresh"
+        android:title="@string/refresh_label"/>
+    
+    <item
+        android:id="@+id/see_mac"
+        android:title="@string/see_mac_vacancy"/>
+    
+    <item
+        android:id="@+id/wku_main_menu"
+        android:title="@string/wku_menu_label"/>
+
+</menu>
