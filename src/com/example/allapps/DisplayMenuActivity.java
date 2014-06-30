@@ -48,6 +48,9 @@ import com.google.android.glass.widget.CardScrollView;
  * 
  * Meal Ids must be added to the menu site URL in the createURL method. The meal Ids are as follows: breakfast = 1, brunch = 639,
  * lunch = 16, and dinner = 17. These have been hardcoded and can be found as static, final variables at the start of the class.
+ * 
+ * 
+ * I added a comment here. Hope to see you later. 
  */
 public class DisplayMenuActivity extends Activity 
 {
