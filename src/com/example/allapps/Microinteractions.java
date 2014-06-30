@@ -7,7 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.glass.app.Card;
-
+/*
+ * This is a comment
+ */
 public class Microinteractions extends Activity 
 {
 
