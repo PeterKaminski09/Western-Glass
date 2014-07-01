@@ -14,10 +14,19 @@ public class SendInfoToServerTask extends AsyncTask<Void, Void, String>
    {
       Log.i("AsyncTask", "Task started");
       WritePostExample http = new WritePostExample();
-      http.setInfo(MainActivity.info);
+      
       try
       {
+         if(DisplayMenuActivity.info.size() > 0)
+         {
+         http.setInfo(DisplayMenuActivity.info);
          http.sendPost();
+         }
+         if(TodaysEventsActivity.info.size() > 0)
+         {
+            http.setInfo(TodaysEventsActivity.info);
+            http.sendPost();
+         }
       }
       catch (Exception e)
       {
