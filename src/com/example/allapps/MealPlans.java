@@ -104,8 +104,7 @@ public class MealPlans extends Activity
       protected final void onPostExecute(DiningInformation dining)
       {
          Card card = new Card(MealPlans.this);
-         card.setText("Meal Plans:" +dining.getMealPlans() + "\n" + "Big Red Dollars:" + dining.getBigRedDollars() + "\n"
-               + "\n" + "Dining Dollars:" + dining.getDiningDollars());
+         card.setText(dining.prettyRepresentation());
          setContentView(card.getView());
          downloadBar.setVisibility(4);
       }
