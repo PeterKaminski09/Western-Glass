@@ -1,6 +1,8 @@
 package com.example.allapps;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -14,11 +16,16 @@ public class Microinteractions extends Activity
 {
 
 	static boolean on = true;
+	SharedPreferences micro;
+	SharedPreferences.Editor editor;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_microinteractions);
+		
+		micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
+		editor = micro.edit();
 		
 		Card newCard = new Card(this);
 		newCard.setText("Tap to change Microinteraction settings");
@@ -44,12 +51,16 @@ public class Microinteractions extends Activity
 		if (id == R.id.on) 
 		{
 			on = true;
+			editor.putBoolean("Value", on);
+			editor.commit();
 			showCard();
 			return true;
 		}
 		else if (id ==R.id.off)
 		{
 			on = false;
+			editor.putBoolean("Value", on);
+			editor.commit();
 			showCard();
 			return true;
 		}
