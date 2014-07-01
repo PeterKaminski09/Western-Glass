@@ -58,6 +58,8 @@ public class DisplayMenuActivity extends Activity
 	String menu;
 	//List of Cards to display each station at Fresh
 	List<Card> mCards = new ArrayList<Card>();
+	//List of cards to display possible meal options, if microinteractions are turned off.
+	List<Card> mealCards = new ArrayList<Card>();
 	//Calendar object to determine the current time and date.
 	Calendar now = Calendar.getInstance();
 	
@@ -77,8 +79,14 @@ public class DisplayMenuActivity extends Activity
 	Calendar brunch = Calendar.getInstance();
 	//Boolean set based on whether or not the menu is available
 	boolean available=true;
+	//Boolean to determine whether or not the menu has been displayed
+	boolean done = false;
 	//SharedPreferences object for saving preferred meal times.
 	SharedPreferences mealTimes;
+	//SharedPreferences object for checking the current microinteraction settings
+	SharedPreferences micro;
+	//Boolean value to contain the microinteraction setting
+	boolean microOn;
 	
 	//Meal IDs
 	private static final String breakfastId = "1";
@@ -87,7 +95,7 @@ public class DisplayMenuActivity extends Activity
 	private static final String dinnerId = "17";
 
 	//String to contain the meal Id
-	String id="1";
+	static String id="";
 	
 	//Progress Bar to display while the menu is loading.
 	ProgressBar downloadBar;
@@ -101,6 +109,11 @@ public class DisplayMenuActivity extends Activity
 		
 		//Call setDates method to set values for start/end of year dates. Also, current date, for testing
 		setDates();
+		
+		//Initialize the microinteraction settings
+		micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
+		//Set microOn to the boolean value stored in micro. If no value is stored, set the default value to true.
+		microOn = micro.getBoolean("Value", true);
 		
 		//If a meal Id was passed with the previous intent, display the meal it indicates
 		try
@@ -147,9 +160,9 @@ public class DisplayMenuActivity extends Activity
 	public void checkMicrointeractions()
 	{
 	 //If microinteractions are enabled, set meal Id using user preferences.
-       if(Microinteractions.on == true)
+       if(microOn)
        {
-          Log.i("ON", String.valueOf(Microinteractions.on));
+          Log.i("ON", String.valueOf(microOn));
            //Check for/apply shared preferences
            getPreferences();
            //Set meal Id
@@ -164,18 +177,83 @@ public class DisplayMenuActivity extends Activity
        else
        {
 
-          Log.i("ON", String.valueOf(Microinteractions.on));
-          //openOptionsMenu(); See onAttachedToWindow
+          Log.i("ON", String.valueOf(microOn));
+          microOff();
        }
 	}
 	
-	//This method was found on Stack Overflow as a possible solution to the problem of opening the options menu from onCreate.
-	@Override
-    public void onAttachedToWindow() 
-    {
-  	    super.onAttachedToWindow();
-  	    openOptionsMenu();
-    }
+	
+	//This method creates and displays a cardScrollView so the user can select a meal option manually, for when microinteractions
+	//are turned off
+	public void microOff()
+	{
+		//get the current day of the week
+		int day = now.get(Calendar.DAY_OF_WEEK), counter;
+		//String array list to contain names of all available meals for the given day of the week
+		ArrayList<String> meals = new ArrayList<String>();
+		
+		//If it is a weekday, add all meal names except for Brunch
+		if(day>=2 && day<=6)
+		{
+			meals.add("Breakfast");
+			meals.add("Lunch");
+			meals.add("Dinner");
+		}
+		//If it is a weekend, only add brunch and dinner
+		else
+		{
+			meals.add("Brunch");
+			meals.add("Dinner");
+		}
+		//for each element in "meals," create a new card with the meal contained in that element as its text. Then add it to the
+		//card list
+		for(counter=0; counter<meals.size(); counter++)
+		{
+			Card newCard = new Card(this);
+			newCard.setText(meals.get(counter));
+			newCard.setFootnote("Tap to view menu.");
+			mealCards.add(newCard);
+			
+		}
+		//Initalize a new card scroll view to display mealCards
+		CardScrollView cardScroll = new CardScrollView(this);
+		//Initalize a new scroll adapter that contains mealCards
+		ScrollAdapter adapter = new ScrollAdapter(mealCards);
+		//Set an onItemClickListener for the scroll view to react to taps
+		cardScroll.setOnItemClickListener(new OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
+			{
+				String name = mealCards.get(position).getText().toString();
+				//When user taps, check which meal he/she has selected
+				switch(name)
+				{
+				case "Breakfast":
+					DisplayMenuActivity.id = "1";
+					break;
+				case "Brunch":
+					DisplayMenuActivity.id="639";
+					break;
+				case "Lunch":
+					DisplayMenuActivity.id="16";
+					break;
+				case "Dinner":
+					DisplayMenuActivity.id="17";
+					break;
+				}
+				//Call startDisplay and createURL to begin the AsyncTask to display the menu
+				startDisplay(createURL(dateString(), DisplayMenuActivity.id));
+			}
+		});
+		
+		//Set the CardScrollView Adapter
+		cardScroll.setAdapter(adapter);
+		//Activate the CardScrollView
+		cardScroll.activate();
+		//Set the content view to the card scroll view
+		setContentView(cardScroll);
+	}
 	
 	//This method creates a date string using the current month, day, and year, and assembles them in a format that can be used
 	//in the assembly of a menu URL.
@@ -199,10 +277,10 @@ public class DisplayMenuActivity extends Activity
 	public void setDates()
 	{
 		//Set values for the start/end of the school year
-		endOfYear.set(2015, 4, 15);
-		startOfYear.set(2014, 7, 25);
+		endOfYear.set(2014, 4, 15);
+		startOfYear.set(2013, 7, 25);
 		//Set fake current date for testing
-		now.set(2015, 4, 5);
+		now.set(2014, 4, 5);
 	}
 	
 	//This method retrieves user preferences set within the FreshMenuSettings activity. If no preferences have been set, default
@@ -417,6 +495,10 @@ public class DisplayMenuActivity extends Activity
 		{
 			//Executed before the thread begins
 	         super.onPreExecute();
+	         
+	        //Set boolean value done to true to show that the AsyncTask is finished working. This will prevent the options 
+	        //menu from appearing automatically when microinteractions are turned off.
+			done = true;
 	         setContentView(R.layout.better_launch);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
