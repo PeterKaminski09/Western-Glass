@@ -54,18 +54,10 @@ public class DiningInformation
            
            //Create the new full url 
            manageId = manageId.concat(endOfURL);
-           //This is the final email once the customized string ending of the url is added to the end of "https://wku.managemyid.com"
-           System.out.println("Final email is " + manageId);
 
            // 3. success then go to manageId.
            String result;
            result = GetPageContent(manageId);
-
-           //Print the html code of the final webpage.
-           //System.out.println(result);
-           //Simple blank line
-           //System.out.println("");
-           
            //The following code in this method sorts through the html code to find the information we need
            //Later I will replace the + "some number" with a better form of dynamic parsing but for now this works
            //Meal Plans extraction
@@ -74,8 +66,6 @@ public class DiningInformation
            if (mealPlans.substring(1).equals("<")){
                mealPlans = mealPlans.substring(0,1);
            }
-           //System.out.println("You have " + mealPlans + " Meal Plans left this week.");
-           
            
            //Dining Dollars extraction
            int posBeforeDiningDollars = result.indexOf("<td>Dining Dollars</td>");
@@ -83,8 +73,6 @@ public class DiningInformation
            if (diningDollars.substring(diningDollars.length()-1).equals("<")){
                diningDollars = diningDollars.substring(0, diningDollars.length()-1);
            }
-           //System.out.println("You have " + diningDollars + " Dining Dollars left.");
-           
            
            //Big Red Dollars extraction
            int posBeforeBigRedDollars = result.indexOf("<td>Big Red Dollars</td>");
@@ -92,7 +80,6 @@ public class DiningInformation
            if (bigRedDollars.substring(bigRedDollars.length()-1).equals("<")){
                bigRedDollars = bigRedDollars.substring(0, bigRedDollars.length()-1);
            }
-           //System.out.println("You have " + bigRedDollars + " Big Red Dollars left.");
            
            //Meal Plan Dollars extraction
            int posBeforeMealPlanDollars = result.indexOf("<td>Meal Plan Dollars</td>");
@@ -100,7 +87,7 @@ public class DiningInformation
            if (mealPlanDollars.substring(mealPlanDollars.length()-1).equals("<")){
                mealPlanDollars = mealPlanDollars.substring(0, mealPlanDollars.length()-1);
            }
-           //System.out.println("You have " + mealPlanDollars + " Meal Plan Dollars left.");
+           
         }
         catch (Exception e)
         {
@@ -152,10 +139,6 @@ public class DiningInformation
        wr.close();
 
        int responseCode = conn.getResponseCode();
-//     System.out.println("\nSending 'POST' request to URL : " + url);
-//     System.out.println("Post parameters : " + postParams);
-//     System.out.println("Response Code : " + responseCode);
-
        BufferedReader in = new BufferedReader(new InputStreamReader(
                conn.getInputStream()));
        String inputLine;
@@ -165,8 +148,6 @@ public class DiningInformation
            response.append(inputLine);
        }
        in.close();
-//     System.out.println("Original response: ");
-//     System.out.println(response.toString());
        
        //New code below
        
@@ -176,10 +157,8 @@ public class DiningInformation
        Elements inputElements = name.getElementsByTag("meta");
        for (Element inputElement : inputElements) {
            String key = inputElement.attr("content");
-           System.out.println("\nBetter link is " + key);
            int pos = key.indexOf("URL=");
            endOfURL = key.substring(pos+4);
-           System.out.println("End of the URL is " + endOfURL);
        }
 
    }
@@ -205,9 +184,6 @@ public class DiningInformation
            }
        }
        int responseCode = conn.getResponseCode();
-//     System.out.println("\nSending 'GET' request to URL : " + url);
-//     System.out.println("Response Code : " + responseCode);
-
        BufferedReader in = new BufferedReader(new InputStreamReader(
                conn.getInputStream()));
        String inputLine;
@@ -228,8 +204,6 @@ public class DiningInformation
    public String getFormParams(String html, String username, String password)
            throws UnsupportedEncodingException {
 
-       System.out.println("Extracting form's data...");
-
        Document doc = Jsoup.parse(html);
        
        // Google form id
@@ -237,7 +211,6 @@ public class DiningInformation
        // doc.getElementsByAttributeValue("action",
        // "/reference.dca?cdx=login");
        Elements links = doc.select("form");
-       System.out.println("Size of links is " + links.size());
        Elements inputElements = links.get(0).getElementsByTag("input");
        List<String> paramList = new ArrayList<String>();
        for (Element inputElement : inputElements) {
@@ -254,7 +227,6 @@ public class DiningInformation
        // build parameters list
        StringBuilder result = new StringBuilder();
        for (String param : paramList) {
-           System.out.println("param = " + param);
            if (result.length() == 0) {
                result.append(param);
            } else {
@@ -284,6 +256,11 @@ public class DiningInformation
    
    public String getMealPlans(){
       return this.mealPlans;
+   }
+   
+   //This method gives us a good way to visualize what information we have attained from this class. 
+   public String prettyRepresentation(){
+      return String.format("Meal plans:%s\nMeal plan dollars:%s\nBig Red dollars:%s\n", this.mealPlans, this.mealPlanDollars, this.bigRedDollars);
    }
 
 }

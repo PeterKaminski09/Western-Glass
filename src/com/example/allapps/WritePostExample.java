@@ -35,7 +35,7 @@ public class WritePostExample {
        // build parameters list
        StringBuilder result = new StringBuilder();
        for (String param : info) {
-           //System.out.println("param = " + param);
+           
            if (result.length() == 0) {
                result.append(param);
            } else {
@@ -62,9 +62,6 @@ public class WritePostExample {
        wr.close();
 
        int responseCode = con.getResponseCode();
-       System.out.println("\nSending 'POST' request to URL : " + url);
-       System.out.println("Post parameters : " + params);
-       System.out.println("Response Code : " + responseCode);
 
        BufferedReader in = new BufferedReader(
                new InputStreamReader(con.getInputStream()));
@@ -75,10 +72,6 @@ public class WritePostExample {
            response.append(inputLine);
        }
        in.close();
-
-       //print result
-       System.out.println(response.toString());
-
    }
 
 }

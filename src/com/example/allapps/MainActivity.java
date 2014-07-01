@@ -42,8 +42,6 @@ public class MainActivity extends Activity
       startTime = System.currentTimeMillis();
       super.onCreate(savedInstanceState);
 
-      Log.d("This happens", "Yep");
-
       options = new ArrayList<Card>();
       mainCard = new Card(this);
 
@@ -61,8 +59,6 @@ public class MainActivity extends Activity
 
       // Set the ContentView to show the Cards
       setContentView(menuScroll);
-
-      Log.d("Message", "Content View is set");
 
       // Set listener for the CardScrollView to generate an action when the user
       // selects a card.
@@ -119,25 +115,19 @@ public class MainActivity extends Activity
                Intent intent = new Intent(context, MealPlans.class);
                startActivity(intent);
             }
-            endTime = System.currentTimeMillis();
-            String time = String.valueOf(endTime - startTime);
-            try
-            {
-               Log.d("TIMETIMETIMETIMETIME", time);
-               info.add(info.size() + "="
-                     + URLEncoder.encode("Main activity " + time, "UTF-8"));
-               new SendInfoToServerTask().execute();
-            }
-            catch (UnsupportedEncodingException e)
-            {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-            catch (Exception e)
-            {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
+//            endTime = System.currentTimeMillis();
+//            String time = String.valueOf(endTime - startTime);
+//            try
+//            {
+//               info.add(info.size() + "="
+//                     + URLEncoder.encode("Main activity " + time, "UTF-8"));
+//               new SendInfoToServerTask().execute();
+//            }
+//            catch (UnsupportedEncodingException e)
+//            {
+//               // TODO Auto-generated catch block
+//               e.printStackTrace();
+//            }
          }
       });
 
@@ -146,19 +136,12 @@ public class MainActivity extends Activity
    @Override
    protected void onResume()
    {
-      Log.d("Message", "On Resume is called");
       onCreate(null);
 
       super.onResume();
    }
 
-   @Override
-   protected void onPause()
-   {
-      Log.d("Message", "On Pause is called");
-
-      super.onPause();
-   }
+  
 
    // Add all menu options to the list of cards
    public void addOptions()
@@ -198,7 +181,6 @@ public class MainActivity extends Activity
       newCard.setFootnote("Tap to begin");
       options.add(newCard);
 
-      Log.d("Message", "Options added");
    }
 
    @Override

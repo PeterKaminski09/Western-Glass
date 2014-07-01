@@ -3,9 +3,11 @@ package com.example.allapps;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -96,10 +98,16 @@ public class DisplayMenuActivity extends Activity
 
 	//String to contain the meal Id
 	static String id="";
+	long startTime, endTime;
+	public static List<String> info = new ArrayList<String>();
 	
 	//Progress Bar to display while the menu is loading.
 	ProgressBar downloadBar;
 
+	protected void onResume(){
+	   super.onResume();
+	   startTime = System.currentTimeMillis();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -605,6 +613,21 @@ public class DisplayMenuActivity extends Activity
 		@Override
 		protected void onPostExecute (ArrayList<String> menu)
 		{
+		 //Stop the time
+           endTime = System.currentTimeMillis();
+           //Find the time by subtracting
+           String time = String.valueOf(endTime - startTime);
+           try
+           {
+              info.add(info.size() + "="
+                    + URLEncoder.encode("Events Activity:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+              new SendInfoToServerTask().execute();
+           }
+           catch (UnsupportedEncodingException e)
+           {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+           }
 			
 			Log.d("Size of menu array",Integer.toString(menu.size()));
 			

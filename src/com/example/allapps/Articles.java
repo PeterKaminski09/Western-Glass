@@ -1,6 +1,5 @@
 package com.example.allapps;
 
-//Articles is a great class
 public class Articles
 {
    /**

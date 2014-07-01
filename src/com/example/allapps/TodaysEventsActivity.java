@@ -1,12 +1,25 @@
 package com.example.allapps;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,70 +34,70 @@ import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class TodaysEventsActivity extends Activity
 {
    // For audio purposes
    private AudioManager mAudioManager;
+   public static List<String> info = new ArrayList<String>();
 
    // Card scrolling objects
    private List<Card> mCards = new ArrayList<Card>();
-   // second list for the nested cards
-   private List<Card> eventCards = new ArrayList<Card>();
    private CardScrollView mCardScrollView;
    private Context context = this;
-
-   private ArrayList<Event> currentEvents = new ArrayList<Event>();
 
    // CATEGORY IDS
    private final static int SPORTS = 314;
    private final static int ARTS = 315;
    private final static int CAMPUS = 313;
    private final static int STUDENT_ACTIVITIES = 307;
+   private SharedPreferences prefs;
+   SharedPreferences.Editor editor;
    
+   //Keys for default preference values
+   private final String SPORTS_KEY = "Athletic Events";
+   private final String ARTS_KEY = "Fine Arts";
+   private final String CAMPUS_KEY = "All Events";
+   private final String STUDENT_KEY = "Student Activities";
+   Map<String,Integer> map = new HashMap<String,Integer>();
+   ValueComparator bvc =  new ValueComparator(map);
+   TreeMap<String,Integer> sorted_map = new TreeMap<String,Integer>(bvc);
+   long startTime, endTime;
+   
+   private int sportCount, artCount, studentCount, campusCount;
+   
+   //UI Elements
    ProgressBar downloadBar;
+   
+   //Counter for preferences, 0 is sports, 1 is arts, 2 is student, 3 is campus
+   int[] counts = new int[4];
 
+   //Start the timer as the activity becomes available to the user. 
+   protected void onResume(){
+      super.onResume();
+    //Start the time as soon as the app launches. 
+      startTime = System.currentTimeMillis();
+   }
    @Override
    protected void onCreate(Bundle savedInstanceState)
    {
       
       super.onCreate(savedInstanceState);
+      
+      
+      //Initiate the shared preferences
+      prefs = this.getSharedPreferences(
+            "com.example.allapps", Context.MODE_PRIVATE);
+      editor = prefs.edit();
+      //Find the user's preferences for display order. 
+      findCounts();
+      //Now set the cards based on the counts
+      setCards();
+      
     //Set up the audio and gestures
       mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-      
-     
-      // Create a sports card.
-      Card sports = new Card(this);
-      sports.setText("Athletic Events");
-      mCards.add(sports);
-
-      // Create an arts card
-      Card arts = new Card(this);
-      arts.setText("Fine Arts");
-      mCards.add(arts);
-      
-      // Create a student activities card
-      Card student = new Card(this);
-      student.setText("Student Activities");
-      mCards.add(student);
-      
-      // Create a card for campus events
-      Card campus = new Card(this);
-      campus.setText("Campus Events");
-      mCards.add(campus);
-
-      Card all = new Card(this);
-      campus.setText("All Activities For Today");
-      mCards.add(all);
-
-      mCards.remove(mCards.size() - 1);
-      
+      //For all the strings in the array, create a card based on the text from the array. 
+           
       mCardScrollView = new CardScrollView(context);
       ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
       mCardScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -94,23 +107,52 @@ public class TodaysEventsActivity extends Activity
                public void onItemClick(AdapterView<?> parent, View view,
                      int position, long id)
                {
-                  mAudioManager.playSoundEffect(Sounds.TAP);
-                  
-                  switch(position)
+                  //Stop the time
+                  endTime = System.currentTimeMillis();
+                  //Find the time by subtracting
+                  String time = String.valueOf(endTime - startTime);
+                  try
                   {
-                  case 0:
-                     new EventTask().execute(SPORTS);
-                     break;
-                  case 1:
-                     new EventTask().execute(ARTS);
-                     break;
-                  case 2: 
-                     new EventTask().execute(STUDENT_ACTIVITIES);
-                     break;
-                  case 3: 
-                     new EventTask().execute(CAMPUS);
-                     break;
+                     info.add(info.size() + "="
+                           + URLEncoder.encode("Events Activity:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+                     new SendInfoToServerTask().execute();
                   }
+                  catch (UnsupportedEncodingException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
+                  //Play a sound effect
+                  mAudioManager.playSoundEffect(Sounds.TAP);
+                  //Find the type of card that was pressed;
+                  String type = mCards.get(position).getText().toString();
+                  //Now run through the available options and start an event task based on what was clicked. 
+                  switch(type)
+                  {
+                  case SPORTS_KEY:
+                     new EventTask().execute(SPORTS);
+                     sportCount++;
+                     break;
+                  case ARTS_KEY:
+                     new EventTask().execute(ARTS);
+                     artCount++;
+                     break;
+                  case STUDENT_KEY: 
+                     new EventTask().execute(STUDENT_ACTIVITIES);
+                     studentCount++;
+                     break;
+                  case CAMPUS_KEY: 
+                     new EventTask().execute(CAMPUS);
+                     campusCount++;
+                     break;
+                  default:
+                     Log.i("DEFAULT REACHED", "DEFAULT");
+                     new EventTask().execute(CAMPUS);
+                  }
+                  
+
+                  //Finish by updating the counts. 
+                  updateCounts();
 
                }
 
@@ -123,7 +165,77 @@ public class TodaysEventsActivity extends Activity
       setContentView(mCardScrollView);
 
    }
-
+   
+   //This determines the current counts for the users recently searched events
+   public void findCounts(){
+      //Set the counts, based on user preferences.
+      sportCount = Integer.parseInt(prefs.getString(SPORTS_KEY, "4"));
+      artCount = Integer.parseInt(prefs.getString(ARTS_KEY, "3"));
+      studentCount = Integer.parseInt(prefs.getString(STUDENT_KEY, "2"));
+      campusCount = Integer.parseInt(prefs.getString(CAMPUS_KEY, "1"));
+      
+      map.put(SPORTS_KEY, sportCount);
+      map.put(ARTS_KEY, artCount);
+      map.put(STUDENT_KEY, studentCount);
+      map.put(CAMPUS_KEY, campusCount);
+      
+      sorted_map.putAll(map);
+      Log.i("MAPPING", sorted_map.toString());
+     
+   }
+   
+   
+   
+   //Update counts refreshes the user preferences. 
+   public void updateCounts(){
+      
+      editor.putString(SPORTS_KEY, String.valueOf(sportCount));
+      editor.putString(ARTS_KEY, String.valueOf(artCount));
+      editor.putString(STUDENT_KEY, String.valueOf(studentCount));
+      editor.putString(CAMPUS_KEY, String.valueOf(campusCount));
+      
+      editor.commit();
+   }
+   
+   public void setCards(){
+    for(int i = 0; i < 4; i++){
+       //For each element in the map, create a card based on the most used option
+       Card card = new Card(TodaysEventsActivity.this);
+       switch(sorted_map.firstEntry().getKey()){
+       case SPORTS_KEY:
+          card.setText(SPORTS_KEY);
+          sorted_map.clear();
+          map.remove(SPORTS_KEY);
+          sorted_map.putAll(map);
+          break;
+       case ARTS_KEY:
+          card.setText(ARTS_KEY);
+          sorted_map.clear();
+          map.remove(ARTS_KEY);
+          sorted_map.putAll(map);
+          break;
+       case STUDENT_KEY:
+          card.setText(STUDENT_KEY);
+          sorted_map.clear();
+          map.remove(STUDENT_KEY);
+          sorted_map.putAll(map);
+          break;
+       case CAMPUS_KEY:
+          card.setText(CAMPUS_KEY);
+          sorted_map.clear();
+          map.remove(CAMPUS_KEY);
+          sorted_map.putAll(map);
+          break;
+          
+       }
+       card.setFootnote("Tap for events");
+       mCards.add(card);
+       
+    }
+   }
+   
+   
+   
    
    // This is the generic adapter for card scrolling and can be found on
    // https://developers.google.com/glass/develop/gdk/ui-widgets
@@ -187,7 +299,6 @@ public class TodaysEventsActivity extends Activity
       @Override
       protected ArrayList<Event> doInBackground(Integer... integers)
       {
-         Log.d("Event", String.valueOf(integers[0]));
          EventParse event = new EventParse(integers[0]);
          return event.getEvents();
       }
@@ -197,17 +308,6 @@ public class TodaysEventsActivity extends Activity
       @Override
       protected final void onPostExecute(ArrayList<Event> events)
       {
-         
-//         
-//         //Create an instance of a calendar. This will be the object we use to compare all date objects
-//         Calendar cal = Calendar.getInstance();
-//         //Run through all the events
-//         for(int i = 0; i < events.size(); i++){
-//   			//compareTimes returns false, remove the event from the array list
-//   			if(!compareTimes(events.get(i).getTime(), cal)){
-//   				events.remove(i);
-//   			}
-//   		}
          
          //For all remaining events, run through the array list and add the event to a string array.
          //This allows us to easily send the information to the showEvent activity. 
@@ -277,6 +377,24 @@ public class TodaysEventsActivity extends Activity
   		}
   		
   	}
+  	
+  //Compares the values within a Map to find the largest to the smallest and sort
+    class ValueComparator implements Comparator<String> {
+
+       Map<String, Integer> base;
+       public ValueComparator(Map<String, Integer> base) {
+           this.base = base;
+       }
+
+       // Note: this comparator imposes orderings that are inconsistent with equals.    
+       public int compare(String a, String b) {
+           if (base.get(a) >= base.get(b)) {
+               return -1;
+           } else {
+               return 1;
+           } // returning 0 would merge keys
+       }
+    }
 
 
 }
