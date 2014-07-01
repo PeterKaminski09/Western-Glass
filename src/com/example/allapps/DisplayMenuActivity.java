@@ -1,4 +1,3 @@
-
 package com.example.allapps;
 
 import java.io.BufferedReader;
