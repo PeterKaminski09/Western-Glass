@@ -44,6 +44,8 @@ import com.google.android.glass.app.Card;
  */
 public class ShowVacancyActivity extends Activity 
 {
+	//Previous intent
+	Intent previous;
 	//Context of the application
 	Context context = this;
 	//String to contain computer type (Mac or PC)
@@ -51,7 +53,9 @@ public class ShowVacancyActivity extends Activity
 	//Speech Request, necessary only when speech recognizer is used
 	private static final int SPEECH_REQUEST = 0;
 	//Shared preferences object for retrieving past preferences
-	SharedPreferences mostRecent;
+	SharedPreferences mostRecent, micro;
+	//Boolean value to determine whether or not microinteractions should be used
+	boolean useMicro;
 	//Shared preferences editor for changing the most recently chosen option
 	SharedPreferences.Editor editor;
 	
@@ -66,44 +70,63 @@ public class ShowVacancyActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_vacancy);
 		
-		//If microinteractions have been turned on, attempt to receive the last used option from SharedPreferences
-		if(Microinteractions.on == true)
+		//Get the previous intent
+		previous = getIntent();
+		//Initialize SharedPreferences object for saving last computer type with the correct settings
+		mostRecent = getSharedPreferences("Computer Vacancy",Context.MODE_PRIVATE);
+		//Initialize SharedPreferences editor to specify the preference to be changed
+		editor = mostRecent.edit();
+		//Initialize SharedPreferences object for retrieving current microinteraction settings
+		micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
+		//Retrieve boolean value from microinteraction preferences. Set microinteractions to "true" if no preferences have
+		//been set.
+		useMicro = micro.getBoolean("Value", true);
+		
+		try
 		{
-			//Initialize SharedPreferences object with the correct settings
-			mostRecent = getSharedPreferences("Computer Vacancy",Context.MODE_PRIVATE);
-			//Initialize SharedPreferences editor to specify the preference to be changed
-			editor = mostRecent.edit();
-			//Get the previous intent
-			Intent previous = getIntent();
-			
-			try
-			{
-				//If a computer type was passed with the intent, determine what that computer type is by calling determineType()
-				type=previous.getStringExtra("Type");
+			//If a computer type has been passed with the intent to start the activity, display that computer type
+				
+				type = previous.getStringExtra("Type");
 				determineType();
-			}
-			//If no computer type was passed with the intent, display the speech recognizer (if it is the app's first use) or set
-			//the type using the most recently used option
-			catch(Exception e)
-			{
-				if(mostRecent.getString("Computer Type",null)==null)
-				{
-					//Display speech recognizer if no previously used type was found
-					displaySpeechRecognizer();
-				}
-				//If the user has already selected a computer type, call setTypeFromOptions to display that type
-				else
-				{
-					setTypeFromOptions();
-				}
-			}
+			
 		}
-		//If microinteractions are disabled, display the speech recognizer  to obtain a computer type from the user
-		else
+		catch(Exception e)
 		{
-			displaySpeechRecognizer();
+		
+			
+			//If microinteractions have been turned on, call the microOn() method to check and implement sharedPreferences
+			if(useMicro)
+			{
+				Log.d("Micro", "on");
+				microOn();
+			}
+			//If microinteractions are disabled, display the Speech Recognizer to receive a computer type from the user vocally
+			else
+			{
+				Log.d("Micro", "off");
+				displaySpeechRecognizer();
+			}
 		}
 
+	}
+	
+	//This method is called when microinteractions are turned on.
+	public void microOn()
+	{
+		
+		
+		if(mostRecent.getString("Computer Type",null)==null)
+		{
+			Log.d("Comp Type","prev not found");
+			//Display speech recognizer if no previously used type was found
+			displaySpeechRecognizer();
+		}
+		//If the user has already selected a computer type, call setTypeFromOptions to display that type
+		else
+		{
+			Log.d("Comp Type","prev found");
+			setTypeFromOptions();
+		}
 	}
 	
 	//This method uses a SharedPreferences object to set the computer type to the last one that was chosen by the user
@@ -119,7 +142,7 @@ public class ShowVacancyActivity extends Activity
 	{
 		   Log.d("Message", "Got here.");
 	       Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-	       intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "What kind of computer are you looking for?\nPC\nMac");
+	       intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "What kind of computer are \nyou looking for?\nPC\nMac");
 	       startActivityForResult(intent, SPEECH_REQUEST);
 	}
 
@@ -153,6 +176,7 @@ public class ShowVacancyActivity extends Activity
 	//be displayed so the user can select an option manually
 	public void determineType()
 	{
+		Log.d("determineType", "called");
 		//If the user requested to see PC vacancies, call the getPCVacanciesTask
 		if(type.contains("pc"))
 		{
@@ -180,11 +204,27 @@ public class ShowVacancyActivity extends Activity
 		//Otherwise, display the main menu
 		else
 		{
+			Log.d("Main Menu", "displayed");
 			Intent intent = new Intent(context, LabMenuActivity.class);
 			startActivity(intent);
 		}
 		
 	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		Log.d("onResume", "is called.");
+	}
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		Log.d("OnPause", "is called.");
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
@@ -350,6 +390,7 @@ public class ShowVacancyActivity extends Activity
 		
 		protected void onPostExecute(String string)
 	    {
+			Log.d("OnPostExecute", "happens");
 			
 			//Create a string of all locations, each on a new line
 			String allLocations="";
@@ -531,7 +572,7 @@ public class ShowVacancyActivity extends Activity
    	    		startIndex = xml.indexOf(">", startIndex)+1;
    	    		stopIndex = xml.indexOf("</Location>", startIndex);
    	    		location = xml.substring(startIndex, stopIndex);
-   	    		locations.add(location);
+   	    		Log.d("Location", location);
    	    		startIndex = stopIndex+18;
    	    		
    	    		//Parse the number of units present from the XML
@@ -539,20 +580,20 @@ public class ShowVacancyActivity extends Activity
    	    		startIndex = xml.indexOf(">", startIndex)+1;
    	    		stopIndex = xml.indexOf("</Macs>", startIndex);
    	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
+   	    		Log.d("Present", String.valueOf(present));
    	    		
-   	    		if(present==0)
+   	    		if(present!=0)
    	    		{
-   	    			macs.add("0");
-   	    		}
-   	    		else
-   	    		{
+   	    			locations.add(location);
    		    		//Parse the number of units in use from the XML
    		    		startIndex = xml.indexOf("<MacsInUse>", startIndex);
    		    		startIndex = xml.indexOf(">", startIndex)+1;
    		    		stopIndex = xml.indexOf("</MacsInUse>", startIndex);
    		    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
+   		    		Log.d("In Use", String.valueOf(inUse));
    		    		
    		    		macs.add(String.valueOf(present-inUse));
+   		    		Log.d("Available", String.valueOf(present-inUse));
    	    		}
    	    		
    	    	}
@@ -593,6 +634,12 @@ public class ShowVacancyActivity extends Activity
 				locations.remove(counter);
 				macs.remove(counter);
 			}
+		}
+		
+		for(int counter=0; counter<macs.size(); counter++)
+		{
+			Log.d("Post Location", locations.get(counter));
+			Log.d("Post available", macs.get(counter));
 		}
 		
 		
