@@ -170,7 +170,6 @@ public class DisplayMenuActivity extends Activity
 	 //If microinteractions are enabled, set meal Id using user preferences.
        if(microOn)
        {
-          Log.i("ON", String.valueOf(microOn));
            //Check for/apply shared preferences
            getPreferences();
            //Set meal Id
@@ -184,8 +183,6 @@ public class DisplayMenuActivity extends Activity
        //If microinteractions are disabled, allow user to choose meal manually
        else
        {
-
-          Log.i("ON", String.valueOf(microOn));
           microOff();
        }
 	}
@@ -518,7 +515,6 @@ public class DisplayMenuActivity extends Activity
 		@Override
 		protected ArrayList<String> doInBackground(String...params)
 		{
-			Log.d("Message 4","I got here.");
 			ArrayList<String> allMenu = new ArrayList<String>();
 			String menu="";
 			try{
@@ -526,7 +522,6 @@ public class DisplayMenuActivity extends Activity
 				URL newUrl = new URL(params[0]);
 				HttpURLConnection conn =(HttpURLConnection) newUrl.openConnection();
 				
-				Log.d("Message 5", "I got here.");
 				
 				//For reading data from URLs
 				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -572,7 +567,7 @@ public class DisplayMenuActivity extends Activity
 						bufferReader.delete(0, currentIndex);
 						currentIndex=bufferReader.indexOf("</a>");
 						item=bufferReader.substring(0,currentIndex);
-						Log.d("Item",item);
+						
 						item=item.toLowerCase();
 						item="-"+item;
 						
@@ -600,8 +595,6 @@ public class DisplayMenuActivity extends Activity
 				allMenu.add(menu);
 			};
 			
-			Log.d("Message 8","I got here.");
-			
 			//Remove any blank items (to prevent the creation of blank cards)
 			if(allMenu.size()>1)
 			allMenu.remove(allMenu.indexOf(""));
@@ -619,8 +612,7 @@ public class DisplayMenuActivity extends Activity
            String time = String.valueOf(endTime - startTime);
            try
            {
-              info.add(info.size() + "="
-                    + URLEncoder.encode("Events Activity:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+              info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("Fresh Menu Activity:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
               new SendInfoToServerTask().execute();
            }
            catch (UnsupportedEncodingException e)
@@ -629,7 +621,7 @@ public class DisplayMenuActivity extends Activity
               e.printStackTrace();
            }
 			
-			Log.d("Size of menu array",Integer.toString(menu.size()));
+			
 			
 			if(menu.size()>=1)
 			{

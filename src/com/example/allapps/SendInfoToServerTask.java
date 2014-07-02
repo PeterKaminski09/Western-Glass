@@ -33,6 +33,11 @@ public class SendInfoToServerTask extends AsyncTask<Void, Void, String>
             http.setInfo(TodaysEventsActivity.info);
             http.sendPost();
          }
+         if(ShowVacancyActivity.info.size() > 0)
+         {
+            http.setInfo(TodaysEventsActivity.info);
+            http.sendPost();
+         }
       }
       catch (Exception e)
       {

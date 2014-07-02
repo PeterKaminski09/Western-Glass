@@ -3,8 +3,11 @@ package com.example.allapps;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -62,7 +65,12 @@ public class ShowVacancyActivity extends Activity
 	//Menu Id. This changes when the user switches from viewing PC to Mac vacancies or vice versa
 	int menuId;
 	
+	long startTime, endTime;
+    public static List<String> info = new ArrayList<String>();
+	
 	ProgressBar downloadBar;
+	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -176,7 +184,6 @@ public class ShowVacancyActivity extends Activity
 	//be displayed so the user can select an option manually
 	public void determineType()
 	{
-		Log.d("determineType", "called");
 		//If the user requested to see PC vacancies, call the getPCVacanciesTask
 		if(type.contains("pc"))
 		{
@@ -184,8 +191,7 @@ public class ShowVacancyActivity extends Activity
 			editor.putString("Computer Type", "pc");
 			editor.commit();
 			menuId=R.menu.pc_vacancy;
-			Log.d("Menu Change","PC Menu");
-			Log.d("Current Menu ID", Integer.toString(menuId));
+			
 			//If the user chose to see available PCs, call PCSoap
 			new PCSoap().execute();
 		}
@@ -196,15 +202,12 @@ public class ShowVacancyActivity extends Activity
 			editor.putString("Computer Type","mac");
 			editor.commit();
 			menuId=R.menu.mac_vacancy;
-			Log.d("Menu Change", "Mac Menu");
-			Log.d("Current Menu ID", Integer.toString(menuId));
 			//If the user chose to see available Macs, call MacSoap
 			new MacSoap().execute();
 		}
 		//Otherwise, display the main menu
 		else
 		{
-			Log.d("Main Menu", "displayed");
 			Intent intent = new Intent(context, LabMenuActivity.class);
 			startActivity(intent);
 		}
@@ -215,14 +218,7 @@ public class ShowVacancyActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
-		Log.d("onResume", "is called.");
-	}
-	
-	@Override
-	public void onPause()
-	{
-		super.onPause();
-		Log.d("OnPause", "is called.");
+		startTime = System.currentTimeMillis();
 	}
 	
 
@@ -390,8 +386,21 @@ public class ShowVacancyActivity extends Activity
 		
 		protected void onPostExecute(String string)
 	    {
-			Log.d("OnPostExecute", "happens");
-			
+		 //Stop the time
+           endTime = System.currentTimeMillis();
+           //Find the time by subtracting
+           String time = String.valueOf(endTime - startTime);
+           try
+           {
+              info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("PC Vacancy:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+              new SendInfoToServerTask().execute();
+           }
+           catch (UnsupportedEncodingException e)
+           {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+           }
+            
 			//Create a string of all locations, each on a new line
 			String allLocations="";
 			for(int counter=0; counter<locations.size(); counter++)
@@ -627,6 +636,23 @@ public class ShowVacancyActivity extends Activity
 	
 	protected void onPostExecute(String string)
     {
+	   
+	 //Stop the time
+       endTime = System.currentTimeMillis();
+       //Find the time by subtracting
+       String time = String.valueOf(endTime - startTime);
+       try
+       {
+          info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("Mac vacancies:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+          new SendInfoToServerTask().execute();
+       }
+       catch (UnsupportedEncodingException e)
+       {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+       }
+        
+       
 		for(int counter=0; counter<macs.size(); counter++)
 		{
 			if(Integer.valueOf(macs.get(counter))==0)
