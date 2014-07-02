@@ -1,8 +1,15 @@
 package com.example.allapps;
 
+/**
+ * Event is the shell for a WKU event. Each event has a title, time, and location
+ * @author peterkaminski
+ *
+ */
 public class Event
 {
+   //Class variables
    private String title, time, location;
+   //Constructor takes all information and sets the object 
    public Event(String eventTitle, String eventTime, String eventLocation)
    {
       this.title = eventTitle;
@@ -10,7 +17,7 @@ public class Event
       this.time = eventTime;
    }
    
-   //Getter methods
+   //Getter/Setter methods
    public String getTime(){
       return this.time;
    }

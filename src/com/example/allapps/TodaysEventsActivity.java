@@ -174,13 +174,15 @@ public class TodaysEventsActivity extends Activity
       studentCount = Integer.parseInt(prefs.getString(STUDENT_KEY, "2"));
       campusCount = Integer.parseInt(prefs.getString(CAMPUS_KEY, "1"));
       
+      //Put them into a map
       map.put(SPORTS_KEY, sportCount);
       map.put(ARTS_KEY, artCount);
       map.put(STUDENT_KEY, studentCount);
       map.put(CAMPUS_KEY, campusCount);
       
+      //Sort the map by most used in a tree map
       sorted_map.putAll(map);
-      Log.i("MAPPING", sorted_map.toString());
+      Log.i("Click counts", sorted_map.toString());
      
    }
    
@@ -188,7 +190,7 @@ public class TodaysEventsActivity extends Activity
    
    //Update counts refreshes the user preferences. 
    public void updateCounts(){
-      
+      //Make the changes to the user preferences
       editor.putString(SPORTS_KEY, String.valueOf(sportCount));
       editor.putString(ARTS_KEY, String.valueOf(artCount));
       editor.putString(STUDENT_KEY, String.valueOf(studentCount));
@@ -197,12 +199,14 @@ public class TodaysEventsActivity extends Activity
       editor.commit();
    }
    
+   //Set the cards in the card list to that of the most used, based on the counts in the map. 
    public void setCards(){
     for(int i = 0; i < 4; i++){
        //For each element in the map, create a card based on the most used option
        Card card = new Card(TodaysEventsActivity.this);
        switch(sorted_map.firstEntry().getKey()){
        case SPORTS_KEY:
+          //For each card set the text, then clear the sorted map. Remove the case just used, and then resort the map
           card.setText(SPORTS_KEY);
           sorted_map.clear();
           map.remove(SPORTS_KEY);
@@ -229,6 +233,7 @@ public class TodaysEventsActivity extends Activity
           
        }
        card.setFootnote("Tap for events");
+       //Then add the card to the array list. 
        mCards.add(card);
        
     }

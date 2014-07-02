@@ -41,11 +41,14 @@ public class NewsActivity extends Activity
       super.onCreate(savedInstanceState);
       // setContentView(R.layout.activity_main);
 
+      //set the content view to be tuggable. I just added that class from the Google documentation
+      //It creates a "tugging" effect on the cards but I think glass does this automatically. 
       setContentView(new TuggableView(this, R.layout.article_layout));
       articleImage = (ImageView)findViewById(R.id.articleImage);
       titleText = (TextView)findViewById(R.id.articleTitle);
       excerptText = (TextView)findViewById(R.id.articleExcerpt);
       
+      //Start the asyncTask to find the news. 
       NewsTask asyncTask = new NewsTask();
       asyncTask.execute();
       
@@ -82,6 +85,7 @@ public class NewsActivity extends Activity
          super.onPreExecute();
       }
 
+      //DoInBackground we need to connect to the API and find the JSON information regarding the latest articles
       @Override
       protected Bitmap doInBackground(Void... voids)
       {
@@ -123,6 +127,7 @@ public class NewsActivity extends Activity
             Document doc2 = Jsoup.parse(excerpt);
             articleExcerpt = doc2.body().text();
 
+            //If there is an image associated with the article, save it 
             if (htmlContents.contains("img"))
             {
                // Find the img tag

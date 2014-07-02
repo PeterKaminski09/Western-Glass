@@ -34,6 +34,10 @@ public class EventParse {
 	//ArrayList that has all the events we collect from the xml source code
 	private ArrayList<Event> events = new ArrayList<Event>();
 	
+	/**
+	 * Constructor takes an eventID (see static variables) that determine what events will be found. 
+	 * @param eventId
+	 */
 	public EventParse(int eventId) {
 		String urlString= URL_BEGINNING + CATEGORY_ID;
 		
@@ -64,12 +68,6 @@ public class EventParse {
 		}
 		
 		
-	}
-	
-	public void printEvents(){
-		for(int i = 0; i < events.size(); i++){
-			System.out.println(events.get(i).prettyRepresentation());
-		}
 	}
 	
 	//Returns the events as an array list. 
@@ -120,11 +118,13 @@ public class EventParse {
 		
 	}
 	
+	//CollectItem takes a stringBuffer of xmlCode and proceeds to find the first event that is contained in the source code
 	public void collectItem(StringBuffer xmlCode){
-		
+		//Event variables
 		String title = "";
 		String time = "";
 		String location = "";
+		
 		//Turn the buffer into a string
 		String xmlSource = xmlCode.toString();
 		int indexofEvent = xmlSource.indexOf("<event>");
@@ -176,7 +176,6 @@ public class EventParse {
 			
 			
 			//Create a new event from the fetched information and store it into the array list of events. 
-			
 			//If the time is NOT passed, then add the event. 
 			if(!time.equals("Passed")){
 			Event event = new Event(title, time, location);
@@ -197,7 +196,7 @@ public class EventParse {
 		String start = "";
 		String end = "";
 		
-		//Find the Ts and Zs that are from the XML
+		//Find the Ts and Zs that are from the XML (XML for time looks like -> T19:00-23:00Z)
 		int firstT = nastyTime.indexOf("T");
 		int firstZ = nastyTime.indexOf("Z");
 		
@@ -213,8 +212,6 @@ public class EventParse {
 		if(firstT != -1 && firstZ != -1)
 			end = nastyTime.substring(firstT + 1, firstZ);
 		
-		String cleanTime = "";
-		
 		//Do the comparison with end time, if it has passed, then return passed. 
 		if(!compareTimes(end, Calendar.getInstance())){
 			
@@ -226,6 +223,7 @@ public class EventParse {
 			}
 		}
 			
+		//Return the time in civilian format
 		 return convertToCivilian(start) + "-" + convertToCivilian(end);
 		
 		
