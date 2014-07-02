@@ -1,5 +1,12 @@
 package com.example.allapps;
 
+/**
+ * Articles is a shell for the WKU news branch of the application. Each article that is pulled from the server
+ * can be distinguished as an article object that has a title, URL (to access the actual article from the internet)
+ * and an excerpt that can be used to find out brief information regarding the article. 
+ * @author peterkaminski
+ *
+ */
 public class Articles
 {
    /**
