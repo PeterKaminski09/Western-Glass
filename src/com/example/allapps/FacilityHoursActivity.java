@@ -64,7 +64,7 @@ public class FacilityHoursActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		//Set a fake current date for testing
-		now.set(2014, 7, 30);
+		now.set(2014, 7, 26);
 		//Set start/end of year
 		startOfYear.set(2014, 7, 25);
 		endOfYear.set(2015, 4, 25);
@@ -112,6 +112,15 @@ public class FacilityHoursActivity extends Activity
 	
 	private class openNow extends AsyncTask<Void, Void, String[]>
 	{
+		//Local variables
+		String name="", timeString="";
+		ArrayList<String> allOpen = new ArrayList<String>();
+		int weekday = now.get(Calendar.DAY_OF_WEEK), index=0, start=0, stop=0, openHr=0, closeHr, openMin, closeMin, currentHr,
+				currentMin;
+		Date currentTime = now.getTime();
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		String time= timeFormat.format(currentTime);
+		
 		//onPreExecute method is called as the AsyncTask begins. This displays a loading screen.
 		protected void onPreExecute()
 		{
@@ -124,14 +133,6 @@ public class FacilityHoursActivity extends Activity
 		}
 		protected String[]  doInBackground(Void...voids)
 		{
-			//Local variables
-			String name="", timeString="";
-			ArrayList<String> allOpen = new ArrayList<String>();
-			int weekday = now.get(Calendar.DAY_OF_WEEK), index=0, start=0, stop=0, openHr=0, closeHr, openMin, closeMin, currentHr,
-					currentMin;
-			Date currentTime = now.getTime();
-			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-			String time= timeFormat.format(currentTime);
 			
 			try
 			{
@@ -166,7 +167,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<name>", index)+6;
 						//Set index to the end of the name tag
 						stop = bufferReader.indexOf("</name>", start);
-						Log.d("Name", bufferReader.substring(start,stop));
 						//Set the name of the current location to what is contained in the name tag
 						name = bufferReader.substring(start, stop);
 						index = stop;
@@ -177,40 +177,14 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<monday>", index)+8;
 						//Set index to the end of the Monday tag
 						stop = bufferReader.indexOf("</monday>", start);
-						Log.d("Times", bufferReader.substring(start,stop));
 						//Set the timeString of the current location to what is contained in the Monday tag
 						timeString = bufferReader.substring(start, stop);
 						index = stop;
 						
 						//Set index to that of the next place/dining location
 						index = bufferReader.indexOf("<place>", index);
-						
-						//Assign open/close hours and minutes
-						Log.d("openHr",timeString.substring(0, timeString.indexOf(":")));
-						openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
-						Log.d("openMin",timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-						openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-						Log.d("closeHr",timeString.substring(timeString.indexOf("-")+1,timeString.indexOf(":", timeString.indexOf("-"))));
-						closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", timeString.indexOf("-")))).trim())+12;
-						Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm")));
-						closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm"))).trim());
-						
-						//Retrieve current hour and current minute from "time" String
-						Log.d("currentHr", time.substring(0, time.indexOf(":")));
-						currentHr = Integer.valueOf(time.substring(0, time.indexOf(":")));
-						Log.d("currentMin",time.substring(time.indexOf(":")+1, time.length()-1));
-						currentMin = Integer.valueOf(time.substring(time.indexOf(":")+1, time.length()-1));
-						
-						//Compare current time with that of the facility's open/close times
-						if((currentHr > openHr && currentHr < closeHr) ||
-								(currentHr == openHr && currentMin >= openMin) ||
-								(currentHr == closeHr && currentMin < closeMin))
-						{
-							//If the current time is between the facility's open and close times, add the facility to the allOpen
-							//ArrayList
-							Log.d("Added", name);
-							allOpen.add(name);
-						}
+					
+						compareTimes();
 					}
 				}
 				
@@ -223,7 +197,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<name>", index)+6;
 						//Set index to the end of the name tag
 						stop = bufferReader.indexOf("</name>", start);
-						Log.d("Name", bufferReader.substring(start,stop));
 						//Set the name of the current location to what is contained in the name tag
 						name = bufferReader.substring(start, stop);
 						index = stop;
@@ -234,7 +207,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<friday>", index)+8;
 						//Set index to the end of the Monday tag
 						stop = bufferReader.indexOf("</friday>", start);
-						Log.d("Times", bufferReader.substring(start,stop));
 						//Set the timeString of the current location to what is contained in the Friday tag
 						timeString = bufferReader.substring(start, stop);
 						index = stop;
@@ -242,32 +214,7 @@ public class FacilityHoursActivity extends Activity
 						//Set index to that of the next place/dining location
 						index = bufferReader.indexOf("<place>", index);
 						
-						//Assign open/close hours and minutes
-						Log.d("openHr",timeString.substring(0, timeString.indexOf(":")));
-						openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
-						Log.d("openMin",timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-						openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-						Log.d("closeHr",timeString.substring(timeString.indexOf("-")+1,timeString.indexOf(":", timeString.indexOf("-"))));
-						closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", timeString.indexOf("-")))).trim())+12;
-						Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm")));
-						closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm"))).trim());
-						
-						//Retrieve current hour and current minute from "time" String
-						Log.d("currentHr", time.substring(0, time.indexOf(":")));
-						currentHr = Integer.valueOf(time.substring(0, time.indexOf(":")));
-						Log.d("currentMin",time.substring(time.indexOf(":")+1, time.length()-1));
-						currentMin = Integer.valueOf(time.substring(time.indexOf(":")+1, time.length()-1));
-						
-						//Compare current time with that of the facility's open/close times
-						if((currentHr > openHr && currentHr < closeHr) ||
-								(currentHr == openHr && currentMin >= openMin) ||
-								(currentHr == closeHr && currentMin < closeMin))
-						{
-							//If the current time is between the facility's open and close times, add the facility to the allOpen
-							//ArrayList
-							Log.d("Added", name);
-							allOpen.add(name);
-						}
+						compareTimes();
 					}
 				}
 				
@@ -279,7 +226,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<name>", index)+6;
 						//Set index to the end of the name tag
 						stop = bufferReader.indexOf("</name>", start);
-						Log.d("Name", bufferReader.substring(start,stop));
 						//Set the name of the current location to what is contained in the name tag
 						name = bufferReader.substring(start, stop);
 						index = stop;
@@ -292,7 +238,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<saturday>", index)+10;
 						//Set index to the end of the Monday tag
 						stop = bufferReader.indexOf("</saturday>", start);
-						Log.d("Times", bufferReader.substring(start,stop));
 						//Set the timeString of the current location to what is contained in the Saturday tag
 						timeString = bufferReader.substring(start, stop);
 						index = stop;
@@ -301,85 +246,7 @@ public class FacilityHoursActivity extends Activity
 						//Set index to that of the next place/dining location
 						index = bufferReader.indexOf("<place>", index);
 						
-						//Retrieve current hour and current minute from "time" String
-						Log.d("currentHr", time.substring(0, time.indexOf(":")));
-						currentHr = Integer.valueOf(time.substring(0, time.indexOf(":")));
-						Log.d("currentMin",time.substring(time.indexOf(":")+1, time.length()-1));
-						currentMin = Integer.valueOf(time.substring(time.indexOf(":")+1, time.length()-1));
-						
-						try
-						{
-							//Assign open/close hours and minutes
-							Log.d("openHr",timeString.substring(0, timeString.indexOf(":")));
-							openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
-							Log.d("openMin",timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-							openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-							Log.d("closeHr",timeString.substring(timeString.indexOf("-")+1,timeString.indexOf(":", timeString.indexOf("-"))));
-							closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", timeString.indexOf("-")))).trim())+12;
-							Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm")));
-							closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm"))).trim());
-							
-							//Compare current time with that of the facility's open/close times
-							if((currentHr > openHr && currentHr < closeHr) ||
-									(currentHr == openHr && currentMin >= openMin) ||
-									(currentHr == closeHr && currentMin < closeMin))
-							{
-								//If the current time is between the facility's open and close times, add the facility to the allOpen
-								//ArrayList
-								Log.d("Added", name);
-								allOpen.add(name);
-							}
-						}
-						catch(Exception e)
-						{
-							if(timeString.contains("|"))
-							{
-								//Assign open/close hours and minutes
-								Log.d("openHr",timeString.substring(0, timeString.indexOf(":")));
-								openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
-								Log.d("openMin",timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-								openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-								Log.d("closeHr",timeString.substring(timeString.indexOf("-")+1,timeString.indexOf(":", timeString.indexOf("-"))));
-								closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", timeString.indexOf("-")))).trim())+12;
-								Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm")));
-								closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm"))).trim());
-								
-								//Compare current time with that of the facility's open/close times
-								if((currentHr > openHr && currentHr < closeHr) ||
-										(currentHr == openHr && currentMin >= openMin) ||
-										(currentHr == closeHr && currentMin < closeMin))
-								{
-									//If the current time is between the facility's open and close times, add the facility to the allOpen
-									//ArrayList
-									Log.d("Added", name);
-									allOpen.add(name);
-								}
-								
-								index = timeString.indexOf("|")+1;
-								
-								//Assign open/close hours and minutes
-								Log.d("openHr",timeString.substring(0, timeString.indexOf(":", index)));
-								openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":", index)));
-								Log.d("openMin",timeString.substring(timeString.indexOf(":", index)+1, timeString.indexOf("am", index)));
-								openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":", index)+1, timeString.indexOf("am", index)));
-								Log.d("closeHr",timeString.substring(timeString.indexOf("-", index)+1,timeString.indexOf(":", timeString.indexOf("-", index))));
-								closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-", index)+1, timeString.indexOf(":", timeString.indexOf("-", index)))).trim())+12;
-								Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-", index))+1, timeString.indexOf("pm", index)));
-								closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-", index))+1, timeString.indexOf("pm", index))).trim());
-								
-								//Compare current time with that of the facility's open/close times
-								if((currentHr > openHr && currentHr < closeHr) ||
-										(currentHr == openHr && currentMin >= openMin) ||
-										(currentHr == closeHr && currentMin < closeMin))
-								{
-									//If the current time is between the facility's open and close times, add the facility to the allOpen
-									//ArrayList
-									Log.d("Added", name);
-									allOpen.add(name);
-								}
-								
-							}
-						}
+						compareTimes();
 						
 					}
 				}
@@ -389,12 +256,10 @@ public class FacilityHoursActivity extends Activity
 					while(index < bufferReader.indexOf("</category>"))
 					{
 				
-	
 						//Set the index to that of the current location's name
 						start = bufferReader.indexOf("<name>", index)+6;
 						//Set index to the end of the name tag
 						stop = bufferReader.indexOf("</name>", start);
-						Log.d("Name", bufferReader.substring(start,stop));
 						//Set the name of the current location to what is contained in the name tag
 						name = bufferReader.substring(start, stop);
 						index = stop;
@@ -405,7 +270,6 @@ public class FacilityHoursActivity extends Activity
 						start = bufferReader.indexOf("<sunday>", index)+8;
 						//Set index to the end of the Sunday tag
 						stop = bufferReader.indexOf("</sunday>", start);
-						Log.d("Times", bufferReader.substring(start,stop));
 						//Set the timeString of the current location to what is contained in the Sunday tag
 						timeString = bufferReader.substring(start, stop);
 						index = stop;
@@ -413,42 +277,11 @@ public class FacilityHoursActivity extends Activity
 						//Set index to that of the next place/dining location
 						index = bufferReader.indexOf("<place>", index);
 						
-						//Retrieve current hour and current minute from "time" String
-						Log.d("currentHr", time.substring(0, time.indexOf(":")));
-						currentHr = Integer.valueOf(time.substring(0, time.indexOf(":")));
-						Log.d("currentMin",time.substring(time.indexOf(":")+1, time.length()-1));
-						currentMin = Integer.valueOf(time.substring(time.indexOf(":")+1, time.length()-1));
-						
-				
-							//Assign open/close hours and minutes
-							Log.d("openHr",timeString.substring(0, timeString.indexOf(":")));
-							openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
-							Log.d("openMin",timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-							openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
-							Log.d("closeHr",timeString.substring(timeString.indexOf("-")+1,timeString.indexOf(":", timeString.indexOf("-"))));
-							closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", timeString.indexOf("-")))).trim())+12;
-							Log.d("closeMin",timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm")));
-							closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, timeString.indexOf("pm"))).trim());
-							
-							//Compare current time with that of the facility's open/close times
-							if((currentHr > openHr && currentHr < closeHr) ||
-									(currentHr == openHr && currentMin >= openMin) ||
-									(currentHr == closeHr && currentMin < closeMin))
-							{
-								//If the current time is between the facility's open and close times, add the facility to the allOpen
-								//ArrayList
-								Log.d("Added", name);
-								allOpen.add(name);
-							}
-						
-						
+						compareTimes();
 				
 					}
 				}
-				
-				
-				
-				
+			
 			}
 			catch(Exception e)
 			{
@@ -460,6 +293,80 @@ public class FacilityHoursActivity extends Activity
 			openList = allOpen.toArray(openList);
 			//Return the String[]
 			return openList;
+		}
+		//This method compares the current time with the operation hours of a location. If the location is currently open, it will
+		//be added to the array of open locations.
+		public void compareTimes()
+		{
+			//Retrieve current hour and current minute from "time" String
+			currentHr = Integer.valueOf(time.substring(0, time.indexOf(":")));
+			currentMin = Integer.valueOf(time.substring(time.indexOf(":")+1, time.length()-1));
+			
+			try
+			{
+				//Assign open/close hours and minutes
+				openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
+				openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
+				closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", 
+						timeString.indexOf("-")))).trim())+12;
+				closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, 
+						timeString.indexOf("pm"))).trim());
+				
+				//Compare current time with that of the facility's open/close times
+				if((currentHr > openHr && currentHr < closeHr) ||
+						(currentHr == openHr && currentMin >= openMin) ||
+						(currentHr == closeHr && currentMin < closeMin))
+				{
+					//If the current time is between the facility's open and close times, add the facility to the allOpen
+					//ArrayList
+					allOpen.add(name);
+				}
+			}
+			catch(Exception e)
+			{
+				if(timeString.contains("|"))
+				{
+					//Assign open/close hours and minutes
+					openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":")));
+					openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":")+1, timeString.indexOf("am")));
+					closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-")+1, timeString.indexOf(":", 
+							timeString.indexOf("-")))).trim())+12;
+					closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-"))+1, 
+							timeString.indexOf("pm"))).trim());
+					
+					//Compare current time with that of the facility's open/close times
+					if((currentHr > openHr && currentHr < closeHr) ||
+							(currentHr == openHr && currentMin >= openMin) ||
+							(currentHr == closeHr && currentMin < closeMin))
+					{
+						//If the current time is between the facility's open and close times, add the facility to the allOpen
+						//ArrayList
+						allOpen.add(name);
+					}
+					
+					index = timeString.indexOf("|")+1;
+					
+					//Assign open/close hours and minutes
+					openHr = Integer.valueOf(timeString.substring(0, timeString.indexOf(":", index)));
+					openMin = Integer.valueOf(timeString.substring(timeString.indexOf(":", index)+1, timeString.indexOf("am", 
+							index)));
+					closeHr = Integer.valueOf((timeString.substring(timeString.indexOf("-", index)+1, timeString.indexOf(":", 
+							timeString.indexOf("-", index)))).trim())+12;
+					closeMin = Integer.valueOf((timeString.substring(timeString.indexOf(":", timeString.indexOf("-", index))+1, 
+							timeString.indexOf("pm", index))).trim());
+					
+					//Compare current time with that of the facility's open/close times
+					if((currentHr > openHr && currentHr < closeHr) ||
+							(currentHr == openHr && currentMin >= openMin) ||
+							(currentHr == closeHr && currentMin < closeMin))
+					{
+						//If the current time is between the facility's open and close times, add the facility to the allOpen
+						//ArrayList
+						allOpen.add(name);
+					}
+					
+				}
+			}
 		}
 		
 		protected void onPostExecute(String[] open)
