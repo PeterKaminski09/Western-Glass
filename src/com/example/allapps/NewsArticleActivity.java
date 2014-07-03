@@ -90,7 +90,7 @@ public class NewsArticleActivity extends Activity
 
          Log.d("MESSAGE", headlines.get(0));
          mCardScrollView = new CardScrollView(context);
-         ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
+         ScrollAdapter adapter = new ScrollAdapter(mCards);
          mCardScrollView
                .setOnItemClickListener(new AdapterView.OnItemClickListener()
                {
@@ -381,7 +381,7 @@ public class NewsArticleActivity extends Activity
          }
 
          mCardScrollView = new CardScrollView(context);
-         ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
+         ScrollAdapter adapter = new ScrollAdapter(mCards);
          mCardScrollView
                .setOnItemClickListener(new AdapterView.OnItemClickListener()
                {
@@ -419,48 +419,5 @@ public class NewsArticleActivity extends Activity
 
    }
 
-   // This is the generic adapter for card scrolling and can be found on
-   // https://developers.google.com/glass/develop/gdk/ui-widgets
-
-   private class ExampleCardScrollAdapter extends CardScrollAdapter
-   {
-
-      @Override
-      public int getPosition(Object item)
-      {
-         return mCards.indexOf(item);
-      }
-
-      @Override
-      public int getCount()
-      {
-         return mCards.size();
-      }
-
-      @Override
-      public Object getItem(int position)
-      {
-         return mCards.get(position);
-      }
-
-      @Override
-      public int getViewTypeCount()
-      {
-         return Card.getViewTypeCount();
-      }
-
-      @Override
-      public int getItemViewType(int position)
-      {
-         return mCards.get(position).getItemViewType();
-      }
-
-      @Override
-      public View getView(int position, View convertView, ViewGroup parent)
-      {
-         return mCards.get(position).getView(convertView, parent);
-
-      }
-   }
 
 }
