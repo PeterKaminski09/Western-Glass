@@ -64,7 +64,7 @@ public class ShowVacancyActivity extends Activity
 	
 	//Menu Id. This changes when the user switches from viewing PC to Mac vacancies or vice versa
 	int menuId;
-	
+	//Variables necessary for timing interactions (testing purposes only)
 	long startTime, endTime;
     public static List<String> info = new ArrayList<String>();
 	
@@ -213,7 +213,7 @@ public class ShowVacancyActivity extends Activity
 		}
 		
 	}
-	
+	//When onResume is called, the current time will be retrieved as the "start" time of the interaction
 	@Override
 	public void onResume()
 	{
@@ -276,7 +276,8 @@ public class ShowVacancyActivity extends Activity
 		return super.onOptionsItemSelected(item);
 		}
 	}
-	
+	//This AsyncTask is called when PC vacancies should be displayed. It retrieves the vacancy information (location and number of
+	//units available) using a SOAP service and displays them in a custom XML layout.
 	private class PCSoap extends AsyncTask<Void, Void, String>
 	{
 		ArrayList<String> locations = new ArrayList<String>();
@@ -521,7 +522,8 @@ public class ShowVacancyActivity extends Activity
 	    	}
 	    	
 	    }
-	
+	//This AsyncTask is called when PC vacancies should be displayed. It retrieves the vacancy information (location and number of
+	//units available) using a SOAP service and displays them in a custom XML layout.
 	private class MacSoap extends AsyncTask<Void, Void, String>
 	{
 	
