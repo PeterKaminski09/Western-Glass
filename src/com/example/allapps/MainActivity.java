@@ -20,7 +20,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
-
+/*
+ * This class creates and displays the main menu for the WKU Glass app. The main menu is displayed using a card scroll view and
+ * features a welcome screen card, as well as a card for each individual section of the app. The sections can be accessed with a
+ * tap from the user on the desired activity's card.
+ */
 public class MainActivity extends Activity
 {
 
@@ -32,7 +36,7 @@ public class MainActivity extends Activity
    Context context = this;
    List<Card> options;
    CardScrollView menuScroll;
-   MenuCardScrollAdapter menuAdapter;
+   ScrollAdapter menuAdapter;
 
    String activity;
 
@@ -45,15 +49,17 @@ public class MainActivity extends Activity
       options = new ArrayList<Card>();
       mainCard = new Card(this);
 
+      //Set text for the welcome screen/card
       mainCard.setText("Welcome to the WKU Glass App");
       mainCard.setFootnote("Swipe for options.");
 
+      //Add Welcome screen to the card list
       options.add(mainCard);
       addOptions();
 
       // Create new CardScrollView and Adapter, and activate the ScrollView
       menuScroll = new CardScrollView(this);
-      menuAdapter = new MenuCardScrollAdapter();
+      menuAdapter = new ScrollAdapter(options);
       menuScroll.setAdapter(menuAdapter);
       menuScroll.activate();
 
@@ -204,46 +210,6 @@ public class MainActivity extends Activity
          return true;
       }
       return super.onOptionsItemSelected(item);
-   }
-
-   private class MenuCardScrollAdapter extends CardScrollAdapter
-   {
-
-      @Override
-      public int getPosition(Object item)
-      {
-         return options.indexOf(item);
-      }
-
-      @Override
-      public int getCount()
-      {
-         return options.size();
-      }
-
-      @Override
-      public Object getItem(int position)
-      {
-         return options.get(position);
-      }
-
-      @Override
-      public int getViewTypeCount()
-      {
-         return Card.getViewTypeCount();
-      }
-
-      @Override
-      public int getItemViewType(int position)
-      {
-         return options.get(position).getItemViewType();
-      }
-
-      @Override
-      public View getView(int position, View convertView, ViewGroup parent)
-      {
-         return options.get(position).getView(convertView, parent);
-      }
    }
 
 }
