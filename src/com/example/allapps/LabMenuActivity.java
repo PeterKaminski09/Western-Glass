@@ -24,7 +24,7 @@ public class LabMenuActivity extends Activity
 	Card mac;
 	List<Card> cardList;
 	CardScrollView mainMenu;
-	MenuCardScrollAdapter mainMenuAdapter;
+	ScrollAdapter mainMenuAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -57,7 +57,7 @@ public class LabMenuActivity extends Activity
 		mainMenu = new CardScrollView(this);
 		
 		//Create a CardScrollAdapter to make the above scroll view functional
-		mainMenuAdapter = new MenuCardScrollAdapter();
+		mainMenuAdapter = new ScrollAdapter(cardList);
 		
 		//Set listener for the CardScrollView to generate an action when the user selects a card.
 		mainMenu.setOnItemClickListener(new OnItemClickListener()
@@ -117,45 +117,5 @@ public class LabMenuActivity extends Activity
 		return super.onOptionsItemSelected(item);
 	}
 	
-	 private class MenuCardScrollAdapter extends CardScrollAdapter 
-	 {
-
-	     	@Override
-	        public int getPosition(Object item) 
-	     	{
-	            return cardList.indexOf(item);
-	        }
-
-	        @Override
-	        public int getCount() 
-	        {
-	            return cardList.size();
-	        }
-
-	        @Override
-	        public Object getItem(int position) 
-	        {
-	            return cardList.get(position);
-	        }
-
-	        @Override
-	        public int getViewTypeCount() 
-	        {
-	            return Card.getViewTypeCount();
-	        }
-
-	        @Override
-	        public int getItemViewType(int position)
-	        {
-	            return cardList.get(position).getItemViewType();
-	        }
-
-	        @Override
-	        public View getView(int position, View convertView,
-	                ViewGroup parent) 
-	        {
-	            return  cardList.get(position).getView(convertView, parent);
-	        }
-	  }
 
 }

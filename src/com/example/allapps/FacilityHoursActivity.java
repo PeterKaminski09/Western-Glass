@@ -455,7 +455,7 @@ public class FacilityHoursActivity extends Activity
 			Card newCard;
 			allCards = new ArrayList<Card>();
 			CardScrollView scroll = new CardScrollView(ref);
-			OpenCardScrollAdapter adapter = new OpenCardScrollAdapter();
+			ScrollAdapter adapter = new ScrollAdapter(allCards);
 			
 			//If any locations are open, add them to the list
 			if(open.length!=0)
@@ -514,47 +514,5 @@ public class FacilityHoursActivity extends Activity
 			
 		}
 	}
-	
-	//CardScrollAdapter that contains the allCards ArrayList.
-			private class OpenCardScrollAdapter extends CardScrollAdapter 
-			 {
-
-			     	@Override
-			        public int getPosition(Object item) 
-			     	{
-			            return allCards.indexOf(item);
-			        }
-
-			        @Override
-			        public int getCount() 
-			        {
-			            return allCards.size();
-			        }
-
-			        @Override
-			        public Object getItem(int position) 
-			        {
-			            return allCards.get(position);
-			        }
-
-			        @Override
-			        public int getViewTypeCount() 
-			        {
-			            return Card.getViewTypeCount();
-			        }
-
-			        @Override
-			        public int getItemViewType(int position)
-			        {
-			            return allCards.get(position).getItemViewType();
-			        }
-
-			        @Override
-			        public View getView(int position, View convertView,
-			                ViewGroup parent) 
-			        {
-			            return  allCards.get(position).getView(convertView, parent);
-			        }
-			  }
 
 }

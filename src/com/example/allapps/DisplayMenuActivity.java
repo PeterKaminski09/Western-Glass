@@ -670,8 +670,8 @@ public class DisplayMenuActivity extends Activity
 						
 				}
 			});
-			//Create a new ExampleCardScrollAdapter object
-			ExampleCardScrollAdapter menuAdapter = new ExampleCardScrollAdapter();
+			//Create a new ScrollAdapter object
+			ScrollAdapter menuAdapter = new ScrollAdapter(mCards);
 			//Set the adapter of the CardScrollView to the previously created adapter
 			menuScroll.setAdapter(menuAdapter);
 			//Activate the ScrollView
@@ -698,50 +698,6 @@ public class DisplayMenuActivity extends Activity
 			};
 			
 		}
-		
-		//This adapter is used to return information about the card list "mCards" for the CardScrollView "menuScroll." Both of 
-		//which are used within the onPostExecute method in the above AsyncTask.
-		 private class ExampleCardScrollAdapter extends CardScrollAdapter 
-		 {
-
-		     	@Override
-		        public int getPosition(Object item) 
-		     	{
-		            return mCards.indexOf(item);
-		        }
-
-		        @Override
-		        public int getCount() 
-		        {
-		            return mCards.size();
-		        }
-
-		        @Override
-		        public Object getItem(int position) 
-		        {
-		            return mCards.get(position);
-		        }
-
-		        @Override
-		        public int getViewTypeCount() 
-		        {
-		            return Card.getViewTypeCount();
-		        }
-
-		        @Override
-		        public int getItemViewType(int position)
-		        {
-		            return mCards.get(position).getItemViewType();
-		        }
-
-		        @Override
-		        public View getView(int position, View convertView,
-		                ViewGroup parent) 
-		        {
-		            return  mCards.get(position).getView(convertView, parent);
-		        }
-		  }
-		
 
 	}
 	
