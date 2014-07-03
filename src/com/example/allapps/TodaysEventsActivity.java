@@ -335,10 +335,9 @@ public class TodaysEventsActivity extends Activity
          {
             extra_strings.add(event.prettyRepresentation());
          }
-
+         //Create a new intent and put the event strings into the intent, then start it. 
          Intent showEvents = new Intent(context, ShowEventsActivity.class);
          showEvents.putStringArrayListExtra("event_strings", extra_strings);
-         Log.i("Activity started", "STARTING");
          // Dismiss the progress bar
          downloadBar.setVisibility(4);
          setContentView(mCardScrollView);
