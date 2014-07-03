@@ -43,7 +43,7 @@ public class FreshMenuSettings extends Activity
 	List<Card> allCards;
 	Card newCard;
 	CardScrollView optionScroll;
-	OptionCardScrollAdapter optionAdapter;
+	ScrollAdapter optionAdapter;
 	SharedPreferences mealTimes;
 	SharedPreferences.Editor editor;
 	String key="";
@@ -60,7 +60,7 @@ public class FreshMenuSettings extends Activity
 		
 		allCards = new ArrayList<Card>();
 		optionScroll = new CardScrollView(this);
-		optionAdapter = new OptionCardScrollAdapter();
+		optionAdapter = new ScrollAdapter(allCards);
 		mealTimes= getSharedPreferences("Menu Times", Context.MODE_PRIVATE);
 		editor= mealTimes.edit();
 		
@@ -237,47 +237,6 @@ public class FreshMenuSettings extends Activity
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	private class OptionCardScrollAdapter extends CardScrollAdapter 
-	 {
-
-	     	@Override
-	        public int getPosition(Object item) 
-	     	{
-	            return allCards.indexOf(item);
-	        }
-
-	        @Override
-	        public int getCount() 
-	        {
-	            return allCards.size();
-	        }
-
-	        @Override
-	        public Object getItem(int position) 
-	        {
-	            return allCards.get(position);
-	        }
-
-	        @Override
-	        public int getViewTypeCount() 
-	        {
-	            return Card.getViewTypeCount();
-	        }
-
-	        @Override
-	        public int getItemViewType(int position)
-	        {
-	            return allCards.get(position).getItemViewType();
-	        }
-
-	        @Override
-	        public View getView(int position, View convertView,
-	                ViewGroup parent) 
-	        {
-	            return  allCards.get(position).getView(convertView, parent);
-	        }
-	  }
 
 	//Method to set a resulting action for when the trackpad is tapped.
 		@Override
