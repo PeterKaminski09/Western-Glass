@@ -63,6 +63,7 @@ public class MainActivity extends Activity
    private final String NEWS = "Campus News";
    private final String EVENT = "Campus Events";
    private final String MEALPLAN = "Meal Plans";
+   
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
