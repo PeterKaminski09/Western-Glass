@@ -31,7 +31,6 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 /*
- * Short Story written by Lydia Buzzard
  * 
  * 
  * This class displays the Fresh Menu for the next available meal, decided by either the default times for each meal or by user
@@ -51,8 +50,6 @@ import com.google.android.glass.widget.CardScrollView;
  * Meal Ids must be added to the menu site URL in the createURL method. The meal Ids are as follows: breakfast = 1, brunch = 639,
  * lunch = 16, and dinner = 17. These have been hardcoded and can be found as static, final variables at the start of the class.
  * 
- * 
- * I added a comment here. Hope to see you later. 
  */
 public class DisplayMenuActivity extends Activity 
 {
@@ -81,8 +78,6 @@ public class DisplayMenuActivity extends Activity
 	Calendar brunch = Calendar.getInstance();
 	//Boolean set based on whether or not the menu is available
 	boolean available=true;
-	//Boolean to determine whether or not the menu has been displayed
-	boolean done = false;
 	//SharedPreferences object for saving preferred meal times.
 	SharedPreferences mealTimes;
 	//SharedPreferences object for checking the current microinteraction settings
@@ -104,6 +99,7 @@ public class DisplayMenuActivity extends Activity
 	//Progress Bar to display while the menu is loading.
 	ProgressBar downloadBar;
 
+	//OnResume retrieves the current time to be set as the "start" time of an interaction (testing only)
 	protected void onResume(){
 	   super.onResume();
 	   startTime = System.currentTimeMillis();
@@ -113,7 +109,6 @@ public class DisplayMenuActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		Log.d("Message 2","I got here.");
 		
 		//Call setDates method to set values for start/end of year dates. Also, current date, for testing
 		setDates();
@@ -164,7 +159,7 @@ public class DisplayMenuActivity extends Activity
 		}
 		
 	}
-	
+	//This method checks whether or not microinteractions are enabled using sharedPreferences
 	public void checkMicrointeractions()
 	{
 	 //If microinteractions are enabled, set meal Id using user preferences.
@@ -451,7 +446,6 @@ public class DisplayMenuActivity extends Activity
 			intent.putExtra("Meal Id","1");
 			//Start the Activity
 			startActivity(intent);
-			Log.d("Message 1", "I got here.");
 			return true;
 		case R.id.brunch:
 			//Assign brunch meal ID
@@ -501,9 +495,6 @@ public class DisplayMenuActivity extends Activity
 			//Executed before the thread begins
 	         super.onPreExecute();
 	         
-	        //Set boolean value done to true to show that the AsyncTask is finished working. This will prevent the options 
-	        //menu from appearing automatically when microinteractions are turned off.
-			done = true;
 	         setContentView(R.layout.better_launch);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
@@ -534,8 +525,6 @@ public class DisplayMenuActivity extends Activity
 				
 				in.close();
 				
-				Log.d("Message 6","I got here.");
-				
 				int currentIndex=0;
 				String stationLabel="",item="";
 				
@@ -546,7 +535,6 @@ public class DisplayMenuActivity extends Activity
 				if(bufferReader.indexOf("recipeLink")!=-1&&
 						bufferReader.indexOf("menuTxt",currentIndex)<bufferReader.indexOf("menuBorder",currentIndex))
 				{
-					Log.d("Message 7","I got here.");
 					currentIndex=0;
 					while(bufferReader.indexOf("ConceptTabText", currentIndex)!=-1)
 					{

@@ -21,7 +21,22 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
-
+/*
+ * This class sets and stores user preferences for the Fresh Menu portion of the application. When microinteractions are enabled,
+ * the user is shown the next available meal based on the current time in relation to set cut-off times for each meal. For
+ * example, the default cut-off time for breakfast is 11AM. If the user accesses the Fresh Menu prior to 11AM, the breakfast
+ * menu will be displayed because it is the next available meal. The user has the option to override this decision by tapping to 
+ * view other options. In this class, the user is given the option to change these cut-off times using speech recognition. After
+ * selecting a meal for which the cut-off time should be changed, the user will be lead through a series of prompts to obtain
+ * the appropriate information. The prompts are as follows:
+ * 
+ * Select hour.
+ * Select minute.
+ * AM or PM?
+ * 
+ * If a problem is found with the user's responses, he/she will be invited to try speaking them again. These preferences are 
+ * saved using a SharedPreferences object and are accessed by the DisplayMenuActivity class.
+ */
 public class FreshMenuSettings extends Activity 
 {
 
@@ -49,6 +64,7 @@ public class FreshMenuSettings extends Activity
 		mealTimes= getSharedPreferences("Menu Times", Context.MODE_PRIVATE);
 		editor= mealTimes.edit();
 		
+		//Create a card for each possible meal to be changed
 		newCard = new Card(this);
 		newCard.setText("Set Breakfast Cut-Off Time");
 		newCard.setFootnote("Display breakfast menu until this time");
@@ -56,7 +72,7 @@ public class FreshMenuSettings extends Activity
 		
 		newCard = new Card(this);
 		newCard.setText("Set Brunch Cut-Off Time");
-		newCard.setFootnote("Display breakfast menu until this time (weekends only)");
+		newCard.setFootnote("Display brunch menu until this time (weekends only)");
 		allCards.add(newCard);
 		
 		newCard = new Card(this);
@@ -68,7 +84,7 @@ public class FreshMenuSettings extends Activity
 		newCard.setText("Set Dinner Cut-Off Time");
 		newCard.setFootnote("Display dinner menu until this time");
 		allCards.add(newCard);
-		
+		//Set adapter for scroll view
 		optionScroll.setAdapter(optionAdapter);
 		//Set listener for the CardScrollView to generate an action when the user selects a card.
 		optionScroll.setOnItemClickListener(new OnItemClickListener()
@@ -76,6 +92,7 @@ public class FreshMenuSettings extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
 			{
+				//Set the preference key depending on what meal time the user would like to change
 				switch(position)
 				{
 				case 0:
@@ -91,17 +108,19 @@ public class FreshMenuSettings extends Activity
 					key="Dinner";
 					break;
 				};
+				//Set the initial prompt
 				String prompt="Select hour.";
+				//Display speech recognizer
 				displaySpeechRecognizer(prompt);
 					
 			}
 		});
 		optionScroll.activate();
-		
+		//Display the scroll view to the user
 		setContentView(optionScroll);
 
 	}
-	
+	//This method displays a speech recognizer to the user to retrieve the new time information vocally.
 	public void displaySpeechRecognizer(String prompt) 
 	   {
 		   Log.d("Message", "Got here.");
@@ -122,6 +141,8 @@ public class FreshMenuSettings extends Activity
 	           List<String> results = data.getStringArrayListExtra(
 	                   RecognizerIntent.EXTRA_RESULTS);
 	           String spokenText = results.get(0).toLowerCase();
+	           //Update the speech recognizer prompt depending on the number of times it has been called previously. This is 
+	           //tracked using the "count" variable.
 	           switch(count)
 	           {
 	           case 1:
@@ -157,7 +178,9 @@ public class FreshMenuSettings extends Activity
 	       }
 	       
 	   }
-	 
+	 //This method formats the user's spoken time into that of a 24 hour clock that can be used by the program in determining which
+	 //meal should be displayed next. If a problem is found with the user's responses, the user will be invited to enter the
+	 //speech recognizer again.
 	 public void formatTime()
 	 {
 		 if(((Integer.parseInt(newHour)<=12 && am) ||
@@ -266,12 +289,14 @@ public class FreshMenuSettings extends Activity
 			    case KeyEvent.KEYCODE_ENTER:
 			         
 			    	//ACTION HERE
-			    	//Open the options menu when tapped, but only when the menu is available
+			    	//If the user's answers were satisfactory, send user back to the Fresh Menu upon tapping.
 			    	if(count==3)
 			    	{
 			    		Intent intent = new Intent(this, DisplayMenuActivity.class);
 			    		startActivity(intent);
 			    	}
+			    	//If problems were found with the user's answers, send user back through speech recognition prompts upon
+			    	//tapping.
 			    	else if(count==4)
 			    	{
 			    		count=0;

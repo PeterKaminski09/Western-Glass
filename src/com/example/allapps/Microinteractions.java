@@ -10,7 +10,9 @@ import android.view.MenuItem;
 
 import com.google.android.glass.app.Card;
 /*
- * This is a comment
+ * This class enables the user to turn microinteractions on/off and is only utilized for testing purposes. The last setting 
+ * selected is saved using a SharedPreferences object and then referenced throughout the application to determine whether or not
+ * a microinteraction should be implemented.
  */
 public class Microinteractions extends Activity 
 {
@@ -26,7 +28,7 @@ public class Microinteractions extends Activity
 		
 		micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
 		editor = micro.edit();
-		
+		//Display welcome card to the user
 		Card newCard = new Card(this);
 		newCard.setText("Tap to change Microinteraction settings");
 		newCard.setFootnote(String.valueOf(on));
@@ -48,6 +50,7 @@ public class Microinteractions extends Activity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
+		//If the user turns microinteractions on, set boolean value of "on" to true and save the change.
 		if (id == R.id.on) 
 		{
 			on = true;
@@ -56,6 +59,7 @@ public class Microinteractions extends Activity
 			showCard();
 			return true;
 		}
+		//If the user turns microinteractions off, set boolean value of "on" to false and save the change.
 		else if (id ==R.id.off)
 		{
 			on = false;

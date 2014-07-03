@@ -27,7 +27,20 @@ import android.widget.ProgressBar;
 import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
-
+/*
+ * This class displays a list of currently open campus dining facilities based on operation hours found in the XML file at the 
+ * following location: http://apps.wku.edu/iwku/maps/places/MainCampus_Places.xml
+ * 
+ * This is accomplished with an AsyncTask. Open locations are displayed in a CardScrollView. Selecting a location by tapping its 
+ * respective card provides the user with directions to that location by calling the StartDirectionsActivity class. The class
+ * does contain some hardcoded values for the start and end of the school year because dining location operation hours are 
+ * irregular during summer months. These values will need to be updated with time. Current values are as follows:
+ * 
+ * startOfYear August 25, 2014 (2014, 7, 25)
+ * endOfYear May 15, 2015 (2015, 4, 15)
+ * 
+ * The current date is also being hardcoded for testing purposes. This will not be so when the app is complete.
+*/
 public class FacilityHoursActivity extends Activity 
 {
 	//Context of the class

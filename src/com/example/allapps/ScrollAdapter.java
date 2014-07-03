@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 
 import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
-
+/*
+ * This object class is called throughout the application to create adpaters for card scroll views. The ScrollAdapter is passed a 
+ * list of cards during initialization, which will be displayed by a card scroll view.
+ */
 public class ScrollAdapter extends CardScrollAdapter
 {
 	List<Card> mCards = new ArrayList<Card>();
