@@ -1,6 +1,5 @@
 package com.example.allapps;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,13 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.example.allapps.TodaysEventsActivity.ValueComparator;
 import com.google.android.glass.app.Card;
-import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
 /*
@@ -46,15 +44,20 @@ public class MainActivity extends Activity
    ScrollAdapter menuAdapter;
 
    String activity;
-   
-   //Shared preferences class variables
+
+   // Shared preferences class variables
    private SharedPreferences prefs;
    SharedPreferences.Editor editor;
    Map<String, Integer> map = new HashMap<String, Integer>();
    ValueComparator bvc = new ValueComparator(map);
    TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(bvc);
-   private int labCount, directionsCount, menuCount, openCount, newsCount, eventCount, mealCount;
+   private int labCount, directionsCount, menuCount, openCount, newsCount,
+         eventCount, mealCount;
    
+   //Text Label
+   TextView text;
+   ProgressBar progressBar;
+
    // Keys for default preference values
    private final String LAB = "Lab Vacancies";
    private final String DIRECTIONS = "Campus Directions";
@@ -63,7 +66,6 @@ public class MainActivity extends Activity
    private final String NEWS = "Campus News";
    private final String EVENT = "Campus Events";
    private final String MEALPLAN = "Meal Plans";
-   
 
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -74,14 +76,14 @@ public class MainActivity extends Activity
       options = new ArrayList<Card>();
       mainCard = new Card(this);
 
-      //Set text for the welcome screen/card
+      // Set text for the welcome screen/card
       mainCard.setText("Welcome to the WKU Glass App");
-      mainCard.setFootnote("Swipe for options.");
+      mainCard.setFootnote("Swipe for options, tap to reset user preferences.");
 
-      //Add Welcome screen to the card list
+      // Add Welcome screen to the card list
       options.add(mainCard);
-      
-   // Initiate the shared preferences
+
+      // Initiate the shared preferences
       prefs = this.getSharedPreferences("com.example.allapps",
             Context.MODE_PRIVATE);
       editor = prefs.edit();
@@ -106,114 +108,70 @@ public class MainActivity extends Activity
          @Override
          public void onItemClick(AdapterView<?> adapter, View v, int position,
                long id)
-           {
+         {
             Intent intent;
             String type = options.get(position).getText().toString();
             // Now run through the available options and start an event
             // task based on what was clicked.
-            switch (type)
-            {
-            case LAB:
-               intent = new Intent(context,
-                     LabMenuActivity.class);
-               startActivity(intent);
-               labCount++;
-               break;
-            case MEALPLAN:
-               intent = new Intent(context,
-                     MealPlans.class);
-               startActivity(intent);
-               mealCount++;
-               break;
-            case EVENT:
-               intent = new Intent(context,
-                     TodaysEventsActivity.class);
-               startActivity(intent);
-               eventCount++;
-               break;
-            case NEWS:
-               intent = new Intent(context,
-                     NewsArticleActivity.class);
-               startActivity(intent);
-               newsCount++;
-               break;
-            case DIRECTIONS:
-               intent = new Intent(context,
-                     StartDirectionsActivity.class);
-               startActivity(intent);
-               directionsCount++;
-               break;
-            case OPEN:
-               intent = new Intent(context,
-                     FacilityHoursActivity.class);
-               startActivity(intent);
-               openCount++;
-               break;
-            case MENU:
-               intent = new Intent(context,
-                     DisplayMenuActivity.class);
-               startActivity(intent);
-               mealCount++;
-               break;
-            default: 
-               Log.e("ERROR", "Couldn't find what activity to start");
-            }
 
-            // Finish by updating the counts.
-            updateCounts();
-//            if (position == 1)
-//            {
-//               // Define the intent to show campus directions
-//               Intent intent = new Intent(MainActivity.this,
-//                     StartDirectionsActivity.class);
-//               startActivity(intent);
-//            }
-//            else if (position == 2)
-//            {
-//               // Define the intent to show campus news
-//               Intent intent = new Intent(MainActivity.this,
-//                     NewsArticleActivity.class);
-//               startActivity(intent);
-//
-//            }
-//            else if (position == 3)
-//            {
-//               // Define the intent to show fresh menu
-//               Intent intent = new Intent(MainActivity.this,
-//                     DisplayMenuActivity.class);
-//               startActivity(intent);
-//            }
-//            else if (position == 4)
-//            {
-//               // Define the intent to show computer lab vacancies
-//               Intent intent = new Intent(MainActivity.this,
-//                     LabMenuActivity.class);
-//               startActivity(intent);
-//
-//            }
-//            else if (position == 5)
-//            {
-//               // Define the intent to show what's open now
-//               Intent intent = new Intent(MainActivity.this,
-//                     FacilityHoursActivity.class);
-//               startActivity(intent);
-//            }
-//            else if (position == 6)
-//            {
-//               // Define the intent to show Campus Events
-//               Intent intent = new Intent(context, TodaysEventsActivity.class);
-//               startActivity(intent);
-//            }
-//            else if (position == 7){
-//               Intent intent = new Intent(context, MealPlans.class);
-//               startActivity(intent);
-//            }
+            if (position == 0)
+            {
+               Log.e("Resetting user prefs", "Reset initiated");
+               resetUserPrefs();
+               openOptionsMenu();
+            }
+            else
+            {
+               switch (type)
+               {
+               case LAB:
+                  intent = new Intent(context, LabMenuActivity.class);
+                  startActivity(intent);
+                  labCount++;
+                  break;
+               case MEALPLAN:
+                  intent = new Intent(context, MealPlans.class);
+                  startActivity(intent);
+                  mealCount++;
+                  break;
+               case EVENT:
+                  intent = new Intent(context, TodaysEventsActivity.class);
+                  startActivity(intent);
+                  eventCount++;
+                  break;
+               case NEWS:
+                  intent = new Intent(context, NewsArticleActivity.class);
+                  startActivity(intent);
+                  newsCount++;
+                  break;
+               case DIRECTIONS:
+                  intent = new Intent(context, StartDirectionsActivity.class);
+                  startActivity(intent);
+                  directionsCount++;
+                  break;
+               case OPEN:
+                  intent = new Intent(context, FacilityHoursActivity.class);
+                  startActivity(intent);
+                  openCount++;
+                  break;
+               case MENU:
+                  intent = new Intent(context, DisplayMenuActivity.class);
+                  startActivity(intent);
+                  mealCount++;
+                  break;
+
+               }
+
+               // Finish by updating the counts.
+               updateCounts();
+
+            }
          }
       });
 
    }
-   
-// This determines the current counts for the users recently searched events
+
+   // This determines the current counts for the users recently searched events
    public void findCounts()
    {
       // Set the counts, based on user preferences.
@@ -224,7 +182,7 @@ public class MainActivity extends Activity
       mealCount = Integer.parseInt(prefs.getString(MEALPLAN, "1"));
       openCount = Integer.parseInt(prefs.getString(OPEN, "1"));
       newsCount = Integer.parseInt(prefs.getString(NEWS, "1"));
-      
+
       // Put them into a map
       map.put(LAB, labCount);
       map.put(MENU, menuCount);
@@ -239,7 +197,7 @@ public class MainActivity extends Activity
       Log.i("Click counts", sorted_map.toString());
 
    }
-   
+
    // Update counts refreshes the user preferences.
    public void updateCounts()
    {
@@ -255,6 +213,21 @@ public class MainActivity extends Activity
       editor.commit();
    }
 
+   // restUserPrefs refreshes the user preferences.
+   public void resetUserPrefs()
+   {
+      // Make the changes to the user preferences
+      editor.putString(LAB, "1");
+      editor.putString(MEALPLAN, "1");
+      editor.putString(DIRECTIONS, "1");
+      editor.putString(NEWS, "1");
+      editor.putString(EVENT, "1");
+      editor.putString(MENU, "1");
+      editor.putString(OPEN, "1");
+
+      editor.commit();
+   }
+
    @Override
    protected void onResume()
    {
@@ -262,8 +235,6 @@ public class MainActivity extends Activity
 
       super.onResume();
    }
-
-  
 
    // Add all menu options to the list of cards
    public void addOptions()
@@ -327,40 +298,6 @@ public class MainActivity extends Activity
          options.add(card);
 
       }
-//      Card newCard = new Card(context);
-//      newCard.setText("Campus Directions");
-//      newCard.setFootnote("Tap to begin");
-//      options.add(newCard);
-//
-//      newCard = new Card(context);
-//      newCard.setText("Campus News");
-//      newCard.setFootnote("Tap to begin");
-//      options.add(newCard);
-//
-//      newCard = new Card(context);
-//      newCard.setText("Fresh Menu");
-//      newCard.setFootnote("Tap to begin.");
-//      options.add(newCard);
-//
-//      newCard = new Card(context);
-//      newCard.setText("Lab Vacancies");
-//      newCard.setFootnote("Tap to begin.");
-//      options.add(newCard);
-//
-//      newCard = new Card(context);
-//      newCard.setText("Open Now");
-//      newCard.setFootnote("Tap to begin.");
-//      options.add(newCard);
-//
-//      newCard = new Card(context);
-//      newCard.setText("Campus Events");
-//      newCard.setFootnote("Tap to begin.");
-//      options.add(newCard);
-//      
-//      newCard = new Card(context);
-//      newCard.setText("Meal Plans");
-//      newCard.setFootnote("Tap to begin");
-//      options.add(newCard);
 
    }
 
@@ -382,11 +319,12 @@ public class MainActivity extends Activity
       int id = item.getItemId();
       if (id == R.id.action_settings)
       {
+         
          return true;
       }
       return super.onOptionsItemSelected(item);
    }
-   
+
    // Compares the values within a Map to find the largest to the smallest and
    // sort
    class ValueComparator implements Comparator<String>

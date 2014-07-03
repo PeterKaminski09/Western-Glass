@@ -41,8 +41,7 @@ public class ShowEventsActivity extends Activity
          for (int i = 0; i < eventStrings.size(); i++)
          {
             Card card = new Card(this);
-            card.setText(StringEscapeUtils.unescapeHtml4(eventStrings.get(i)).replaceAll(
-                  "[^\\x20-\\x7e]", ""));
+            card.setText(eventStrings.get(i));
             mCards.add(card);
          }
 

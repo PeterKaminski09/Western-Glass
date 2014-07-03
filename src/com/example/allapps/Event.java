@@ -1,5 +1,7 @@
 package com.example.allapps;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 /**
  * Event is the shell for a WKU event. Each event has a title, time, and location
  * @author peterkaminski
@@ -12,8 +14,10 @@ public class Event
    //Constructor takes all information and sets the object 
    public Event(String eventTitle, String eventTime, String eventLocation)
    {
-      this.title = eventTitle;
-      this.location = eventLocation;
+      this.title = StringEscapeUtils.unescapeHtml4(eventTitle).replaceAll(
+            "[^\\x20-\\x7e]", "");
+      this.location = StringEscapeUtils.unescapeHtml4(eventLocation).replaceAll(
+            "[^\\x20-\\x7e]", "");;
       this.time = eventTime;
    }
    
