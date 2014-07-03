@@ -3,6 +3,8 @@ package com.example.allapps;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +41,8 @@ public class ShowEventsActivity extends Activity
          for (int i = 0; i < eventStrings.size(); i++)
          {
             Card card = new Card(this);
-            card.setText(eventStrings.get(i));
+            card.setText(StringEscapeUtils.unescapeHtml4(eventStrings.get(i)).replaceAll(
+                  "[^\\x20-\\x7e]", ""));
             mCards.add(card);
          }
 
@@ -56,35 +59,6 @@ public class ShowEventsActivity extends Activity
       mCardScrollView = new CardScrollView(context);
       ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
 
-      // mCardScrollView.setOnItemClickListener(new
-      // AdapterView.OnItemClickListener()
-      // {
-      //
-      // @Override
-      // public void onItemClick(AdapterView<?> parent, View view,
-      // int position, long id)
-      // {
-      // mAudioManager.playSoundEffect(Sounds.TAP);
-      //
-      // switch(position)
-      // {
-      // case 0:
-      // new EventTask().execute(SPORTS);
-      // break;
-      // case 1:
-      // new EventTask().execute(ARTS);
-      // break;
-      // case 2:
-      // new EventTask().execute(STUDENT_ACTIVITIES);
-      // break;
-      // case 3:
-      // new EventTask().execute(CAMPUS);
-      // break;
-      // }
-      //
-      // }
-      //
-      // });
       mCardScrollView.setAdapter(adapter);
       mCardScrollView.activate();
 
