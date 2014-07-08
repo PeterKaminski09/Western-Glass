@@ -105,13 +105,11 @@ public class ShowVacancyActivity extends Activity
 			//If microinteractions have been turned on, call the microOn() method to check and implement sharedPreferences
 			if(useMicro)
 			{
-				Log.d("Micro", "on");
 				microOn();
 			}
 			//If microinteractions are disabled, display the Speech Recognizer to receive a computer type from the user vocally
 			else
 			{
-				Log.d("Micro", "off");
 				displaySpeechRecognizer();
 			}
 		}
@@ -125,14 +123,12 @@ public class ShowVacancyActivity extends Activity
 		
 		if(mostRecent.getString("Computer Type",null)==null)
 		{
-			Log.d("Comp Type","prev not found");
 			//Display speech recognizer if no previously used type was found
 			displaySpeechRecognizer();
 		}
 		//If the user has already selected a computer type, call setTypeFromOptions to display that type
 		else
 		{
-			Log.d("Comp Type","prev found");
 			setTypeFromOptions();
 		}
 	}
@@ -140,7 +136,6 @@ public class ShowVacancyActivity extends Activity
 	//This method uses a SharedPreferences object to set the computer type to the last one that was chosen by the user
 	public void setTypeFromOptions()
 	{
-		Log.d("setTypeFromOptions","Is called");
 		type=mostRecent.getString("Computer Type", null);
 		//Call determine type to figure out which AsyncTask should be started based on the contents of "type"
 		determineType();
@@ -148,7 +143,6 @@ public class ShowVacancyActivity extends Activity
 	//This method displays a speech recognizer to obtain a computer type from the user vocally
 	public void displaySpeechRecognizer() 
 	{
-		   Log.d("Message", "Got here.");
 	       Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 	       intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "What kind of computer are \nyou looking for?\nPC\nMac");
 	       startActivityForResult(intent, SPEECH_REQUEST);
@@ -158,7 +152,6 @@ public class ShowVacancyActivity extends Activity
 	protected void onActivityResult(int requestCode, int resultCode,
 	           Intent data)
 	{
-		   Log.d("Message", "Got here too");
 		   super.onActivityResult(requestCode, resultCode, data);
 	       if (requestCode == SPEECH_REQUEST && resultCode == RESULT_OK) 
 	       {
@@ -219,6 +212,8 @@ public class ShowVacancyActivity extends Activity
 	{
 		super.onResume();
 		startTime = System.currentTimeMillis();
+
+        Log.i("Starting the clock", String.valueOf(startTime));
 	}
 	
 
@@ -248,7 +243,6 @@ public class ShowVacancyActivity extends Activity
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		Log.d("Current Menu ID", Integer.toString(menuId));
 		switch(id)
 		{
 		case R.id.refresh:
@@ -258,14 +252,12 @@ public class ShowVacancyActivity extends Activity
 			//Save Mac as most recently used computer type
 			editor.putString("Computer Type", "mac");
 			editor.commit();
-			Log.d("Message", "Mac vacancies get called.");
 			setTypeFromOptions();
 			return true;
 		case R.id.see_pc:
 			//Save PC as most recently used computer type
 			editor.putString("Computer Type", "pc");
 			editor.commit();
-			Log.d("Message", "PC vacancies get called.");
 			setTypeFromOptions();
 			return true;
 		case R.id.wku_main_menu:
@@ -288,6 +280,17 @@ public class ShowVacancyActivity extends Activity
     	{
     		//Executed before the thread begins
 	         super.onPreExecute();
+	         
+	       //Stop the time
+	           endTime = System.currentTimeMillis();
+	           //Find the time by subtracting
+	           String time = String.valueOf(endTime - startTime);
+
+               Log.i("Start", String.valueOf(startTime));
+               Log.i("End", String.valueOf(endTime));
+               Log.i("Time", time);
+	           Log.d("Microinteractions", String.valueOf(useMicro));
+	           Log.d("PC Vacancy time", time);
 	         setContentView(R.layout.activity_show_vacancy);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
@@ -295,78 +298,78 @@ public class ShowVacancyActivity extends Activity
     	}
 		protected String doInBackground(Void...voids)
 		{
-			SoapSerializationEnvelope envelope;
-			String xml="";
-			try {
-	            // Create SOAP Connection
-				HttpTransportSE htse = new HttpTransportSE(
-						"https://atechlabs.wku.edu/soap/traffic/");
-				
-	            // Send SOAP Message to SOAP Server
-	           String url = "https://atechlabs.wku.edu/soap/traffic/";
-	           
-	           envelope = createSOAPRequest(url);
-	           
-	           htse.call("https://atechlabs.wku.edu/soap/traffic/GetLabTraffic", 
-						envelope);
-
-	            // Process the SOAP Response
-	           Object response =  envelope.getResponse();
-	           if(response instanceof Vector)
-	           {
-	        	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
-	        	   xml = element0.toString();
-//	        	   Log.d("Response", xml);
-//	        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
-	        	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
-	        	   xml = xml +" "+element1.toString();
-//	        	   Log.d("Response", xml);
-	        	   
-	        	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
-	   			
-	   			String location="";
-	   	    	
-	   	    	Log.d("Before while loop", "I got here");
-	   	    	
-	   	    	while(xml.indexOf("<Location>", startIndex)>=0)
-	   	    	{
-	   	    		Log.d("While loop", "I got here");
-	   	    		//Parse the location title from the XML
-	   	    		startIndex = xml.indexOf("<Location>",startIndex);
-	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-	   	    		stopIndex = xml.indexOf("</Location>", startIndex);
-	   	    		location = xml.substring(startIndex, stopIndex);
-	   	    		locations.add(location);
-	   	    		startIndex = stopIndex+18;
-	   	    		
-	   	    		//Parse the number of units present from the XML
-	   	    		startIndex = xml.indexOf("<PCs>", startIndex);
-	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-	   	    		stopIndex = xml.indexOf("</PCs>", startIndex);
-	   	    		Log.d("Present",xml.substring(startIndex, stopIndex));
-	   	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
-	   	    		
-	   	    		//Parse the number of units in use from the XML
-	   	    		startIndex = xml.indexOf("<PCsInUse>", startIndex);
-	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-	   	    		stopIndex = xml.indexOf("</PCsInUse>", startIndex);
-	   	    		Log.d("In use",xml.substring(startIndex, stopIndex));
-	   	    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
-	   	    		
-	   	    		//Add the number of available PCs to the arrayList
-	   	    		pcs.add(String.valueOf(present-inUse));
-	   	    		
-	   	    	}
-	     
-	           }
-
-	        } 
-			catch (Exception e) 
-			{
-	            System.err.println("Error occurred while sending SOAP Request to Server");
-	            e.printStackTrace();
-	        }
-			
+//			SoapSerializationEnvelope envelope;
+//			String xml="";
+//			try {
+//	            // Create SOAP Connection
+//				HttpTransportSE htse = new HttpTransportSE(
+//						"https://atechlabs.wku.edu/soap/traffic/");
+//				
+//	            // Send SOAP Message to SOAP Server
+//	           String url = "https://atechlabs.wku.edu/soap/traffic/";
+//	           
+//	           envelope = createSOAPRequest(url);
+//	           
+//	           htse.call("https://atechlabs.wku.edu/soap/traffic/GetLabTraffic", 
+//						envelope);
+//
+//	            // Process the SOAP Response
+//	           Object response =  envelope.getResponse();
+//	           if(response instanceof Vector)
+//	           {
+//	        	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
+//	        	   xml = element0.toString();
+////	        	   Log.d("Response", xml);
+////	        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
+//	        	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
+//	        	   xml = xml +" "+element1.toString();
+////	        	   Log.d("Response", xml);
+//	        	   
+//	        	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
+//	   			
+//	   			String location="";
+//	   	    	
+//	   	    	Log.d("Before while loop", "I got here");
+//	   	    	
+//	   	    	while(xml.indexOf("<Location>", startIndex)>=0)
+//	   	    	{
+//	   	    		Log.d("While loop", "I got here");
+//	   	    		//Parse the location title from the XML
+//	   	    		startIndex = xml.indexOf("<Location>",startIndex);
+//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+//	   	    		stopIndex = xml.indexOf("</Location>", startIndex);
+//	   	    		location = xml.substring(startIndex, stopIndex);
+//	   	    		locations.add(location);
+//	   	    		startIndex = stopIndex+18;
+//	   	    		
+//	   	    		//Parse the number of units present from the XML
+//	   	    		startIndex = xml.indexOf("<PCs>", startIndex);
+//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+//	   	    		stopIndex = xml.indexOf("</PCs>", startIndex);
+//	   	    		Log.d("Present",xml.substring(startIndex, stopIndex));
+//	   	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
+//	   	    		
+//	   	    		//Parse the number of units in use from the XML
+//	   	    		startIndex = xml.indexOf("<PCsInUse>", startIndex);
+//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+//	   	    		stopIndex = xml.indexOf("</PCsInUse>", startIndex);
+//	   	    		Log.d("In use",xml.substring(startIndex, stopIndex));
+//	   	    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
+//	   	    		
+//	   	    		//Add the number of available PCs to the arrayList
+//	   	    		pcs.add(String.valueOf(present-inUse));
+//	   	    		
+//	   	    	}
+//	     
+//	           }
+//
+//	        } 
+//			catch (Exception e) 
+//			{
+//	            System.err.println("Error occurred while sending SOAP Request to Server");
+//	            e.printStackTrace();
+//	        }
+			String xml = "";
 			return xml;
 			
 			
@@ -387,27 +390,12 @@ public class ShowVacancyActivity extends Activity
 		
 		protected void onPostExecute(String string)
 	    {
-		 //Stop the time
-           endTime = System.currentTimeMillis();
-           //Find the time by subtracting
-           String time = String.valueOf(endTime - startTime);
-           try
-           {
-              info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("PC Vacancy:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
-              new SendInfoToServerTask().execute();
-           }
-           catch (UnsupportedEncodingException e)
-           {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-           }
-            
+		 
 			//Create a string of all locations, each on a new line
 			String allLocations="";
 			for(int counter=0; counter<locations.size(); counter++)
 			{
 				allLocations=allLocations+"\n"+locations.get(counter);
-				Log.d("Location loop", "Location added");
 			};
 			
 			//Find number of units available based on the number of units present and the number of units currently in use.
@@ -415,20 +403,17 @@ public class ShowVacancyActivity extends Activity
 			for(int counter=0; counter<pcs.size(); counter++)
 			{
 				allAvailable=allAvailable+"\n"+pcs.get(counter);
-				Log.d("Available loop", "Num added");
 			};
 
 			//Create relative layout for the right hand side of the display
 			RelativeLayout showAll = (RelativeLayout) findViewById(R.id.right_column);
-			Log.d("Right ID", String.valueOf(R.id.right_column));
-			Log.d("Right layout", "found");
+			
 			
 			//Create relative layout for the list of locations
 			RelativeLayout locations = new RelativeLayout(context);
 			RelativeLayout.LayoutParams locationParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
 			locations.setId(11);
-			Log.d("Location view", "created");
 			
 			//Create text view object for the location list and location heading
 			TextView locationList = new TextView(context);
@@ -445,13 +430,12 @@ public class ShowVacancyActivity extends Activity
 			locationList.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
 			locationParams.addRule(RelativeLayout.BELOW, locHeading.getId());
 			locationList.setLayoutParams(locationParams);
-			Log.d("Location heading", "set");
-			Log.d("Location list", "set");
+			
 			
 			//Add location/location heading to the relative layout.
 			locations.addView(locHeading);
 			locations.addView(locationList);
-			Log.d("Location view", "children added");
+			
 			
 			
 			//Create relative layout for the list of units available
@@ -459,13 +443,11 @@ public class ShowVacancyActivity extends Activity
 			RelativeLayout.LayoutParams unitParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
 			units.setId(10);
-			Log.d("Unit view", "created");
 			
 			//Create units available heading
 			TextView unitHeading = new TextView(context);
 			unitHeading.setText("Available");
 			unitHeading.setId(3);
-			Log.d("Unit heading", "created");
 			
 			//Create list of units available
 			TextView availableList = new TextView(context);
@@ -476,21 +458,19 @@ public class ShowVacancyActivity extends Activity
 			unitParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 			//Assign the predefined parameters to the availableList TextView.
 			availableList.setLayoutParams(unitParams);
-			Log.d("Unit list", "set");
 			
 			availableList.setId(4);
 			
 			//Add unit heading, units available, and refresh button to the unit Relative Layout
 			units.addView(unitHeading);
 			units.addView(availableList);
-			Log.d("Unit view", "children added");
 		
 			
 			RelativeLayout.LayoutParams listParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
-			Log.d("Parameters", "created");
+			
 			units.setLayoutParams(listParams);
-			Log.d("Parameters", "Added");
+		
 			
 			//PROBLEM OCCURS HERE
 			if(showAll==null)
@@ -501,20 +481,17 @@ public class ShowVacancyActivity extends Activity
 			{
 			//Add locations and units to the overall display
 			showAll.addView(units);
-			Log.d("Right layout", "unit view added");
 			}
 			
 			//Create RelativeLayout for left side of the display
 			RelativeLayout showLeft = (RelativeLayout) findViewById(R.id.left_column);
 			showLeft.addView(locations);
-			Log.d("Left layout", "found");
-			Log.d("Left layout", "location view added");
+			
 			
 			RelativeLayout all = (RelativeLayout) findViewById(R.id.allInfo);
 			
-			Log.d("Entire Layout", "found");
 			downloadBar.setVisibility(4);
-			Log.d("Progress bar", "removed");
+			
 			all.removeViewAt(0);
 			//Set content view to the XML layout file
 			setContentView(all);
@@ -535,6 +512,24 @@ public class ShowVacancyActivity extends Activity
 	{
 		//Executed before the thread begins
         super.onPreExecute();
+        
+      //Stop the time
+        endTime = System.currentTimeMillis();
+        //Find the time by subtracting
+        String time = String.valueOf(endTime - startTime);
+        Log.i("Start", String.valueOf(startTime));
+        Log.i("End", String.valueOf(endTime));
+        Log.i("Time", time);
+        try
+        {
+           info.add(info.size() + "=" + URLEncoder.encode("Mac vacancies:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
+           new SendInfoToServerTask().execute();
+        }
+        catch (UnsupportedEncodingException e)
+        {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+        }
         setContentView(R.layout.activity_show_vacancy);
         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
         //Simulate starting the downloadBar
@@ -573,17 +568,14 @@ public class ShowVacancyActivity extends Activity
    			
    			String location="";
    	    	
-   	    	Log.d("Before while loop", "I got here");
-   	    	
    	    	while(xml.indexOf("<Location>", startIndex)>=0)
    	    	{
-   	    		Log.d("While loop", "I got here");
    	    		//Parse the location title from the XML
    	    		startIndex = xml.indexOf("<Location>",startIndex);
    	    		startIndex = xml.indexOf(">", startIndex)+1;
    	    		stopIndex = xml.indexOf("</Location>", startIndex);
    	    		location = xml.substring(startIndex, stopIndex);
-   	    		Log.d("Location", location);
+   	    		
    	    		startIndex = stopIndex+18;
    	    		
    	    		//Parse the number of units present from the XML
@@ -591,7 +583,7 @@ public class ShowVacancyActivity extends Activity
    	    		startIndex = xml.indexOf(">", startIndex)+1;
    	    		stopIndex = xml.indexOf("</Macs>", startIndex);
    	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
-   	    		Log.d("Present", String.valueOf(present));
+   	    		
    	    		
    	    		if(present!=0)
    	    		{
@@ -601,10 +593,10 @@ public class ShowVacancyActivity extends Activity
    		    		startIndex = xml.indexOf(">", startIndex)+1;
    		    		stopIndex = xml.indexOf("</MacsInUse>", startIndex);
    		    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
-   		    		Log.d("In Use", String.valueOf(inUse));
+   		    		
    		    		
    		    		macs.add(String.valueOf(present-inUse));
-   		    		Log.d("Available", String.valueOf(present-inUse));
+   		    		
    	    		}
    	    		
    	    	}
@@ -639,22 +631,6 @@ public class ShowVacancyActivity extends Activity
 	protected void onPostExecute(String string)
     {
 	   
-	 //Stop the time
-       endTime = System.currentTimeMillis();
-       //Find the time by subtracting
-       String time = String.valueOf(endTime - startTime);
-       try
-       {
-          info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("Mac vacancies:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
-          new SendInfoToServerTask().execute();
-       }
-       catch (UnsupportedEncodingException e)
-       {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-       }
-        
-       
 		for(int counter=0; counter<macs.size(); counter++)
 		{
 			if(Integer.valueOf(macs.get(counter))==0)
@@ -664,11 +640,7 @@ public class ShowVacancyActivity extends Activity
 			}
 		}
 		
-		for(int counter=0; counter<macs.size(); counter++)
-		{
-			Log.d("Post Location", locations.get(counter));
-			Log.d("Post available", macs.get(counter));
-		}
+		
 		
 		
 		//Create a string of all locations, each on a new line

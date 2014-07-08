@@ -52,7 +52,8 @@ public class TodaysEventsActivity extends Activity
    private final static int STUDENT_ACTIVITIES = 307;
    private SharedPreferences prefs;
    SharedPreferences.Editor editor;
-   boolean micros;
+   boolean useMicro;
+   SharedPreferences micro;
 
    // Keys for default preference values
    private final String SPORTS_KEY = "Athletic Events";
@@ -91,6 +92,11 @@ public class TodaysEventsActivity extends Activity
       prefs = this.getSharedPreferences("com.example.allapps",
             Context.MODE_PRIVATE);
       editor = prefs.edit();
+    //Initialize SharedPreferences object for retrieving current microinteraction settings
+      micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
+      //Retrieve boolean value from microinteraction preferences. Set microinteractions to "true" if no preferences have
+      //been set.
+      useMicro = micro.getBoolean("Value", true);
       // Find the user's preferences for display order.
       findCounts();
       // Now set the cards based on the counts
@@ -115,20 +121,8 @@ public class TodaysEventsActivity extends Activity
                   endTime = System.currentTimeMillis();
                   // Find the time by subtracting
                   String time = String.valueOf(endTime - startTime);
-                  try
-                  {
-                     info.add(info.size()
-                           + "="
-                           + URLEncoder.encode("Events Activity:  " + time
-                                 + " milliseconds" + " Microinteractions:"
-                                 + Microinteractions.on, "UTF-8"));
-                     new SendInfoToServerTask().execute();
-                  }
-                  catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  Log.d("Microinteractions", String.valueOf(useMicro));
+                  Log.d("Events Activity time", time);
                   // Play a sound effect
                   mAudioManager.playSoundEffect(Sounds.TAP);
                   // Find the type of card that was pressed;

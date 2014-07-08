@@ -494,7 +494,12 @@ public class DisplayMenuActivity extends Activity
 		{
 			//Executed before the thread begins
 	         super.onPreExecute();
-	         
+	       //Stop the time
+	           endTime = System.currentTimeMillis();
+	           //Find the time by subtracting
+	           String time = String.valueOf(endTime - startTime);
+	           Log.d("Microinteractions", String.valueOf(microOn));
+	           Log.d("Fresh Menu time", time);
 	         setContentView(R.layout.better_launch);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
@@ -507,85 +512,85 @@ public class DisplayMenuActivity extends Activity
 		protected ArrayList<String> doInBackground(String...params)
 		{
 			ArrayList<String> allMenu = new ArrayList<String>();
-			String menu="";
-			try{
-				//Create URL from url String and create connection
-				URL newUrl = new URL(params[0]);
-				HttpURLConnection conn =(HttpURLConnection) newUrl.openConnection();
-				
-				
-				//For reading data from URLs
-				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				StringBuffer bufferReader = new StringBuffer();
-				String inputLine;
-							      
-				//Run through the connection and store the file into the buffer reader. 
-				while ((inputLine = in.readLine()) != null)
-				bufferReader.append(inputLine+"\n");
-				
-				in.close();
-				
-				int currentIndex=0;
-				String stationLabel="",item="";
-				
-				currentIndex=bufferReader.indexOf("menuBorder")+1;
-				
-				
-				//Determine if any meal options are available for the given day/meal.
-				if(bufferReader.indexOf("recipeLink")!=-1&&
-						bufferReader.indexOf("menuTxt",currentIndex)<bufferReader.indexOf("menuBorder",currentIndex))
-				{
-					currentIndex=0;
-					while(bufferReader.indexOf("ConceptTabText", currentIndex)!=-1)
-					{
-						//Get the station name from the string buffer
-						currentIndex=bufferReader.indexOf("ConceptTabText")+16;
-						bufferReader.delete(0,currentIndex);
-						currentIndex= bufferReader.indexOf("</td>");
-						stationLabel= bufferReader.substring(0,currentIndex);
-						
-						menu=stationLabel;
-						
-						currentIndex=bufferReader.indexOf("menuBorder",currentIndex)+1;
-						
-						while(bufferReader.indexOf("menuBorder", currentIndex)>bufferReader.indexOf("menuTxt",currentIndex))
-						{
-						//Get the available menu items for each station
-						currentIndex=bufferReader.indexOf("recipeLink")+12;
-						bufferReader.delete(0, currentIndex);
-						currentIndex=bufferReader.indexOf("</a>");
-						item=bufferReader.substring(0,currentIndex);
-						
-						item=item.toLowerCase();
-						item="-"+item;
-						
-						//Add each item to the menu
-						menu=menu+"\n"+item;
-						};
-						
-						allMenu.add(menu);
-						menu="";
-					}
-				}
-				else
-					menu = "No menu options are available for the day.";
-					allMenu.add(menu);
-				}
-			
-			catch(MalformedURLException d)
-			{
-				menu="Menu unavailable.";
-				allMenu.add(menu);
-			}
-			catch(IOException e)
-			{
-				menu="Menu unavailable.";
-				allMenu.add(menu);
-			};
-			
-			//Remove any blank items (to prevent the creation of blank cards)
-			if(allMenu.size()>1)
-			allMenu.remove(allMenu.indexOf(""));
+//			String menu="";
+//			try{
+//				//Create URL from url String and create connection
+//				URL newUrl = new URL(params[0]);
+//				HttpURLConnection conn =(HttpURLConnection) newUrl.openConnection();
+//				
+//				
+//				//For reading data from URLs
+//				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//				StringBuffer bufferReader = new StringBuffer();
+//				String inputLine;
+//							      
+//				//Run through the connection and store the file into the buffer reader. 
+//				while ((inputLine = in.readLine()) != null)
+//				bufferReader.append(inputLine+"\n");
+//				
+//				in.close();
+//				
+//				int currentIndex=0;
+//				String stationLabel="",item="";
+//				
+//				currentIndex=bufferReader.indexOf("menuBorder")+1;
+//				
+//				
+//				//Determine if any meal options are available for the given day/meal.
+//				if(bufferReader.indexOf("recipeLink")!=-1&&
+//						bufferReader.indexOf("menuTxt",currentIndex)<bufferReader.indexOf("menuBorder",currentIndex))
+//				{
+//					currentIndex=0;
+//					while(bufferReader.indexOf("ConceptTabText", currentIndex)!=-1)
+//					{
+//						//Get the station name from the string buffer
+//						currentIndex=bufferReader.indexOf("ConceptTabText")+16;
+//						bufferReader.delete(0,currentIndex);
+//						currentIndex= bufferReader.indexOf("</td>");
+//						stationLabel= bufferReader.substring(0,currentIndex);
+//						
+//						menu=stationLabel;
+//						
+//						currentIndex=bufferReader.indexOf("menuBorder",currentIndex)+1;
+//						
+//						while(bufferReader.indexOf("menuBorder", currentIndex)>bufferReader.indexOf("menuTxt",currentIndex))
+//						{
+//						//Get the available menu items for each station
+//						currentIndex=bufferReader.indexOf("recipeLink")+12;
+//						bufferReader.delete(0, currentIndex);
+//						currentIndex=bufferReader.indexOf("</a>");
+//						item=bufferReader.substring(0,currentIndex);
+//						
+//						item=item.toLowerCase();
+//						item="-"+item;
+//						
+//						//Add each item to the menu
+//						menu=menu+"\n"+item;
+//						};
+//						
+//						allMenu.add(menu);
+//						menu="";
+//					}
+//				}
+//				else
+//					menu = "No menu options are available for the day.";
+//					allMenu.add(menu);
+//				}
+//			
+//			catch(MalformedURLException d)
+//			{
+//				menu="Menu unavailable.";
+//				allMenu.add(menu);
+//			}
+//			catch(IOException e)
+//			{
+//				menu="Menu unavailable.";
+//				allMenu.add(menu);
+//			};
+//			
+//			//Remove any blank items (to prevent the creation of blank cards)
+//			if(allMenu.size()>1)
+//			allMenu.remove(allMenu.indexOf(""));
 			
 			return allMenu;
 		}
@@ -594,23 +599,6 @@ public class DisplayMenuActivity extends Activity
 		@Override
 		protected void onPostExecute (ArrayList<String> menu)
 		{
-		 //Stop the time
-           endTime = System.currentTimeMillis();
-           //Find the time by subtracting
-           String time = String.valueOf(endTime - startTime);
-           try
-           {
-              info.add(Calendar.getInstance().get(Calendar.DATE) + " " + URLEncoder.encode("Fresh Menu Activity:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
-              new SendInfoToServerTask().execute();
-           }
-           catch (UnsupportedEncodingException e)
-           {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-           }
-			
-			
-			
 			if(menu.size()>=1)
 			{
 				//Create a new Card
