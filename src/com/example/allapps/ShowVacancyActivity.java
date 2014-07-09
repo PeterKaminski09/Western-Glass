@@ -44,6 +44,8 @@ import com.google.android.glass.app.Card;
  * to open the app, but subsequent uses will not require this additional prompt unless Microinteractions are turned off. The 
  * vacancy information is retrieved/displayed by way of an AsyncTask, and the last user preference is saved using
  * SharedPreferences.
+ * 
+ * Code written and commented by Lydia Buzzard
  */
 public class ShowVacancyActivity extends Activity 
 {
@@ -328,21 +330,16 @@ public class ShowVacancyActivity extends Activity
 	           {
 	        	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
 	        	   xml = element0.toString();
-//	        	   Log.d("Response", xml);
-//	        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
 	        	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
 	        	   xml = xml +" "+element1.toString();
-//	        	   Log.d("Response", xml);
 	        	   
 	        	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
 	   			
 	   			String location="";
 	   	    	
-	   	    	Log.d("Before while loop", "I got here");
 	   	    	
 	   	    	while(xml.indexOf("<Location>", startIndex)>=0)
 	   	    	{
-	   	    		Log.d("While loop", "I got here");
 	   	    		//Parse the location title from the XML
 	   	    		startIndex = xml.indexOf("<Location>",startIndex);
 	   	    		startIndex = xml.indexOf(">", startIndex)+1;
@@ -355,14 +352,12 @@ public class ShowVacancyActivity extends Activity
 	   	    		startIndex = xml.indexOf("<PCs>", startIndex);
 	   	    		startIndex = xml.indexOf(">", startIndex)+1;
 	   	    		stopIndex = xml.indexOf("</PCs>", startIndex);
-	   	    		Log.d("Present",xml.substring(startIndex, stopIndex));
 	   	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
 	   	    		
 	   	    		//Parse the number of units in use from the XML
 	   	    		startIndex = xml.indexOf("<PCsInUse>", startIndex);
 	   	    		startIndex = xml.indexOf(">", startIndex)+1;
 	   	    		stopIndex = xml.indexOf("</PCsInUse>", startIndex);
-	   	    		Log.d("In use",xml.substring(startIndex, stopIndex));
 	   	    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
 	   	    		
 	   	    		//Add the number of available PCs to the arrayList
@@ -481,11 +476,7 @@ public class ShowVacancyActivity extends Activity
 		
 			
 			//PROBLEM OCCURS HERE
-			if(showAll==null)
-			{
-				Log.d("ShowAll", "is null");
-			}
-			else
+			if(showAll!=null)
 			{
 			//Add locations and units to the overall display
 			showAll.addView(units);
@@ -547,11 +538,8 @@ public class ShowVacancyActivity extends Activity
            {
         	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
         	   xml = element0.toString();
-//        	   Log.d("Response", xml);
-//        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
         	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
         	   xml = xml +" "+element1.toString();
-//        	   Log.d("Response", xml);
         	   
         	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
    			
