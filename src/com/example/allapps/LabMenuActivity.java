@@ -20,14 +20,22 @@ import com.google.android.glass.widget.CardScrollView;
  * This class displays the computer lab vacancy main menu. The menu is contained in a card scroll view with a welcome card, a PC
  * card, and a Mac card. Selecting either the PC or Mac card with a tap will call the ShowVacancyActivity to display the chosen
  * computer type's vacancies to the user.
+ * 
+ * Code written and commented by Lydia Buzzard
  */
 public class LabMenuActivity extends Activity 
 {
+	//Card for the welcome screen
 	Card menuCard;
+	//PC option card
 	Card pc;
+	//Mac option card
 	Card mac;
+	//List to contain welcome card and both options
 	List<Card> cardList;
+	//Scroll view to display card list
 	CardScrollView mainMenu;
+	//Adapter to supply scroll view with card list
 	ScrollAdapter mainMenuAdapter;
 
 	@Override

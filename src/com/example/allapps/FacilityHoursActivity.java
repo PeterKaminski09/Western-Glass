@@ -40,6 +40,8 @@ import com.google.android.glass.widget.CardScrollView;
  * endOfYear May 15, 2015 (2015, 4, 15)
  * 
  * The current date is also being hardcoded for testing purposes. This will not be so when the app is complete.
+ * 
+ * Code written and commented by Lydia Buzzard
 */
 public class FacilityHoursActivity extends Activity 
 {

@@ -36,21 +36,32 @@ import com.google.android.glass.widget.CardScrollView;
  * 
  * If a problem is found with the user's responses, he/she will be invited to try speaking them again. These preferences are 
  * saved using a SharedPreferences object and are accessed by the DisplayMenuActivity class.
+ * 
+ * Code written and commented by Lydia Buzzard
  */
 public class FreshMenuSettings extends Activity 
 {
-
+	//Card list to hold all settings options
 	List<Card> allCards;
+	//Card instance to add to above card list
 	Card newCard;
+	//Scroll view for the card list of options
 	CardScrollView optionScroll;
+	//Adapter to supply scroll view with card list
 	ScrollAdapter optionAdapter;
+	//SharedPreferences object for saving user input
 	SharedPreferences mealTimes;
+	//SharedPreferences object for recording user input
 	SharedPreferences.Editor editor;
+	//Key to set the preference to be changed.
 	String key="";
+	//Speech Request for Speech Recognizer
 	private final int SPEECH_REQUEST = 0;
-	String newHour="";
-	String newMin="";
+	//Strings to save the new hour/minute the user has spoken
+	String newHour="", newMin="";
+	//Boolean value set based on whether the user meant for the time to be AM or PM
 	boolean am=true;
+	//Count to record number of times the speech recognizer has been displayed
 	int count=0;
 	
 	@Override
@@ -58,6 +69,7 @@ public class FreshMenuSettings extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		
+		//Initialize all local variables
 		allCards = new ArrayList<Card>();
 		optionScroll = new CardScrollView(this);
 		optionAdapter = new ScrollAdapter(allCards);
@@ -84,6 +96,11 @@ public class FreshMenuSettings extends Activity
 		newCard.setText("Set Dinner Cut-Off Time");
 		newCard.setFootnote("Display dinner menu until this time");
 		allCards.add(newCard);
+		
+		newCard = new Card(this);
+		newCard.setText("Delete saved preferences.");
+		newCard.setFootnote("Restores all meal times to default settings.");
+		allCards.add(newCard);
 		//Set adapter for scroll view
 		optionScroll.setAdapter(optionAdapter);
 		//Set listener for the CardScrollView to generate an action when the user selects a card.
@@ -97,21 +114,25 @@ public class FreshMenuSettings extends Activity
 				{
 				case 0:
 					key="Breakfast";
+					startSpeech();
 					break;
 				case 1:
 					key="Brunch";
+					startSpeech();
 					break;
 				case 2:
 					key="Lunch";
+					startSpeech();
 					break;
 				case 3:
 					key="Dinner";
+					startSpeech();
+					break;
+				case 4:
+					restoreDefault();
 					break;
 				};
-				//Set the initial prompt
-				String prompt="Select hour.";
-				//Display speech recognizer
-				displaySpeechRecognizer(prompt);
+				
 					
 			}
 		});
@@ -119,6 +140,24 @@ public class FreshMenuSettings extends Activity
 		//Display the scroll view to the user
 		setContentView(optionScroll);
 
+	}
+	//This method begins the process of receiving information from the user with the speech recognizer
+	public void startSpeech()
+	{
+		//Set the initial prompt
+		String prompt="Select hour.";
+		//Display speech recognizer
+		displaySpeechRecognizer(prompt);
+	}
+	//This method clears all previously stored user preferences and allows the user to return to the Fresh Menu
+	public void restoreDefault()
+	{
+		this.mealTimes.edit().clear().commit();
+		newCard = new Card(this);
+		newCard.setText("Default settings have been restored.");
+		newCard.setFootnote("Tap to return to the Fresh Menu.");
+		count = 3;
+		setContentView(newCard.getView());
 	}
 	//This method displays a speech recognizer to the user to retrieve the new time information vocally.
 	public void displaySpeechRecognizer(String prompt) 
@@ -151,6 +190,8 @@ public class FreshMenuSettings extends Activity
 	        	   break;
 	           case 2:
 	        	   newMin=spokenText;
+	        	   //Ensure that the minute is formatted correctly
+	        	   checkMin();
 	        	   displaySpeechRecognizer("AM or PM?");
 	        	   break;
 	           case 3:
@@ -178,6 +219,25 @@ public class FreshMenuSettings extends Activity
 	       }
 	       
 	   }
+	 //This method formats the user's choice for the new minute based on common speech patterns that may not be understood by
+	 //Glass
+	 public void checkMin()
+	 {
+		 if(newMin.equals("0"))
+  	   	{
+  		   newMin="00";
+  	   	}
+		 else if(newMin.contains("o"))
+		 {
+			 newMin.replaceAll("o", "0");
+		 }
+		 if(newMin.length()>2)
+		 {
+			 count=1;
+			 displaySpeechRecognizer("Select minute.");
+		 }
+  	   
+	 }
 	 //This method formats the user's spoken time into that of a 24 hour clock that can be used by the program in determining which
 	 //meal should be displayed next. If a problem is found with the user's responses, the user will be invited to enter the
 	 //speech recognizer again.

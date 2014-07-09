@@ -50,6 +50,8 @@ import com.google.android.glass.widget.CardScrollView;
  * Meal Ids must be added to the menu site URL in the createURL method. The meal Ids are as follows: breakfast = 1, brunch = 639,
  * lunch = 16, and dinner = 17. These have been hardcoded and can be found as static, final variables at the start of the class.
  * 
+ * Code written and commented by Lydia Buzzard
+ * 
  */
 public class DisplayMenuActivity extends Activity 
 {
@@ -102,8 +104,6 @@ public class DisplayMenuActivity extends Activity
 	//OnResume retrieves the current time to be set as the "start" time of an interaction (testing only)
 	protected void onResume(){
 	   super.onResume();
-	   Log.d("onResume", "is called");
-	   Log.d("startTime", String.valueOf(startTime));
 	   if(count!=1)
 	   {
 		   startTime = (int) System.currentTimeMillis();
@@ -115,6 +115,7 @@ public class DisplayMenuActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		//Calls onResume method if it has yet to be called (testing only)
 		if(count==0)
 		{
 			onResume();
