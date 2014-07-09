@@ -93,7 +93,7 @@ public class DisplayMenuActivity extends Activity
 
 	//String to contain the meal Id
 	static String id="";
-	long startTime, endTime;
+	int startTime, endTime, count=0;
 	public static List<String> info = new ArrayList<String>();
 	
 	//Progress Bar to display while the menu is loading.
@@ -102,14 +102,23 @@ public class DisplayMenuActivity extends Activity
 	//OnResume retrieves the current time to be set as the "start" time of an interaction (testing only)
 	protected void onResume(){
 	   super.onResume();
-	   startTime = System.currentTimeMillis();
+	   Log.d("onResume", "is called");
+	   Log.d("startTime", String.valueOf(startTime));
+	   if(count!=1)
+	   {
+		   startTime = (int) System.currentTimeMillis();
+		   count=1;
+	   }
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		
+		if(count==0)
+		{
+			onResume();
+		}
 		//Call setDates method to set values for start/end of year dates. Also, current date, for testing
 		setDates();
 		
@@ -366,6 +375,14 @@ public class DisplayMenuActivity extends Activity
 	//This method calls the DownloadWebpageTask AsyncTask to download/display the menu using the URL passed from OnCreate
 	public void startDisplay(String url)
 	{
+		//Stop the time
+        endTime = (int) System.currentTimeMillis();
+        Log.d("End time",String.valueOf(endTime));
+        Log.d("Start time", String.valueOf(startTime));
+        //Find the time by subtracting
+        String time = String.valueOf(endTime - startTime);
+        Log.d("Microinteractions", String.valueOf(microOn));
+        Log.d("Fresh Menu time", time);
 		new DownloadWebpageTask().execute(url);
 	}
 	
@@ -494,12 +511,6 @@ public class DisplayMenuActivity extends Activity
 		{
 			//Executed before the thread begins
 	         super.onPreExecute();
-	       //Stop the time
-	           endTime = System.currentTimeMillis();
-	           //Find the time by subtracting
-	           String time = String.valueOf(endTime - startTime);
-	           Log.d("Microinteractions", String.valueOf(microOn));
-	           Log.d("Fresh Menu time", time);
 	         setContentView(R.layout.better_launch);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
@@ -512,85 +523,85 @@ public class DisplayMenuActivity extends Activity
 		protected ArrayList<String> doInBackground(String...params)
 		{
 			ArrayList<String> allMenu = new ArrayList<String>();
-//			String menu="";
-//			try{
-//				//Create URL from url String and create connection
-//				URL newUrl = new URL(params[0]);
-//				HttpURLConnection conn =(HttpURLConnection) newUrl.openConnection();
-//				
-//				
-//				//For reading data from URLs
-//				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//				StringBuffer bufferReader = new StringBuffer();
-//				String inputLine;
-//							      
-//				//Run through the connection and store the file into the buffer reader. 
-//				while ((inputLine = in.readLine()) != null)
-//				bufferReader.append(inputLine+"\n");
-//				
-//				in.close();
-//				
-//				int currentIndex=0;
-//				String stationLabel="",item="";
-//				
-//				currentIndex=bufferReader.indexOf("menuBorder")+1;
-//				
-//				
-//				//Determine if any meal options are available for the given day/meal.
-//				if(bufferReader.indexOf("recipeLink")!=-1&&
-//						bufferReader.indexOf("menuTxt",currentIndex)<bufferReader.indexOf("menuBorder",currentIndex))
-//				{
-//					currentIndex=0;
-//					while(bufferReader.indexOf("ConceptTabText", currentIndex)!=-1)
-//					{
-//						//Get the station name from the string buffer
-//						currentIndex=bufferReader.indexOf("ConceptTabText")+16;
-//						bufferReader.delete(0,currentIndex);
-//						currentIndex= bufferReader.indexOf("</td>");
-//						stationLabel= bufferReader.substring(0,currentIndex);
-//						
-//						menu=stationLabel;
-//						
-//						currentIndex=bufferReader.indexOf("menuBorder",currentIndex)+1;
-//						
-//						while(bufferReader.indexOf("menuBorder", currentIndex)>bufferReader.indexOf("menuTxt",currentIndex))
-//						{
-//						//Get the available menu items for each station
-//						currentIndex=bufferReader.indexOf("recipeLink")+12;
-//						bufferReader.delete(0, currentIndex);
-//						currentIndex=bufferReader.indexOf("</a>");
-//						item=bufferReader.substring(0,currentIndex);
-//						
-//						item=item.toLowerCase();
-//						item="-"+item;
-//						
-//						//Add each item to the menu
-//						menu=menu+"\n"+item;
-//						};
-//						
-//						allMenu.add(menu);
-//						menu="";
-//					}
-//				}
-//				else
-//					menu = "No menu options are available for the day.";
-//					allMenu.add(menu);
-//				}
-//			
-//			catch(MalformedURLException d)
-//			{
-//				menu="Menu unavailable.";
-//				allMenu.add(menu);
-//			}
-//			catch(IOException e)
-//			{
-//				menu="Menu unavailable.";
-//				allMenu.add(menu);
-//			};
-//			
-//			//Remove any blank items (to prevent the creation of blank cards)
-//			if(allMenu.size()>1)
-//			allMenu.remove(allMenu.indexOf(""));
+			String menu="";
+			try{
+				//Create URL from url String and create connection
+				URL newUrl = new URL(params[0]);
+				HttpURLConnection conn =(HttpURLConnection) newUrl.openConnection();
+				
+				
+				//For reading data from URLs
+				BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				StringBuffer bufferReader = new StringBuffer();
+				String inputLine;
+							      
+				//Run through the connection and store the file into the buffer reader. 
+				while ((inputLine = in.readLine()) != null)
+				bufferReader.append(inputLine+"\n");
+				
+				in.close();
+				
+				int currentIndex=0;
+				String stationLabel="",item="";
+				
+				currentIndex=bufferReader.indexOf("menuBorder")+1;
+				
+				
+				//Determine if any meal options are available for the given day/meal.
+				if(bufferReader.indexOf("recipeLink")!=-1&&
+						bufferReader.indexOf("menuTxt",currentIndex)<bufferReader.indexOf("menuBorder",currentIndex))
+				{
+					currentIndex=0;
+					while(bufferReader.indexOf("ConceptTabText", currentIndex)!=-1)
+					{
+						//Get the station name from the string buffer
+						currentIndex=bufferReader.indexOf("ConceptTabText")+16;
+						bufferReader.delete(0,currentIndex);
+						currentIndex= bufferReader.indexOf("</td>");
+						stationLabel= bufferReader.substring(0,currentIndex);
+						
+						menu=stationLabel;
+						
+						currentIndex=bufferReader.indexOf("menuBorder",currentIndex)+1;
+						
+						while(bufferReader.indexOf("menuBorder", currentIndex)>bufferReader.indexOf("menuTxt",currentIndex))
+						{
+						//Get the available menu items for each station
+						currentIndex=bufferReader.indexOf("recipeLink")+12;
+						bufferReader.delete(0, currentIndex);
+						currentIndex=bufferReader.indexOf("</a>");
+						item=bufferReader.substring(0,currentIndex);
+						
+						item=item.toLowerCase();
+						item="-"+item;
+						
+						//Add each item to the menu
+						menu=menu+"\n"+item;
+						};
+						
+						allMenu.add(menu);
+						menu="";
+					}
+				}
+				else
+					menu = "No menu options are available for the day.";
+					allMenu.add(menu);
+				}
+			
+			catch(MalformedURLException d)
+			{
+				menu="Menu unavailable.";
+				allMenu.add(menu);
+			}
+			catch(IOException e)
+			{
+				menu="Menu unavailable.";
+				allMenu.add(menu);
+			};
+			
+			//Remove any blank items (to prevent the creation of blank cards)
+			if(allMenu.size()>1)
+			allMenu.remove(allMenu.indexOf(""));
 			
 			return allMenu;
 		}

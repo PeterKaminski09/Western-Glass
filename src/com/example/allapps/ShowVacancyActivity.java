@@ -63,7 +63,7 @@ public class ShowVacancyActivity extends Activity
 	SharedPreferences.Editor editor;
 	
 	//Menu Id. This changes when the user switches from viewing PC to Mac vacancies or vice versa
-	int menuId;
+	int menuId, count;
 	//Variables necessary for timing interactions (testing purposes only)
 	long startTime, endTime;
     public static List<String> info = new ArrayList<String>();
@@ -76,6 +76,10 @@ public class ShowVacancyActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		if(count==0)
+		{
+			onResume();
+		}
 		setContentView(R.layout.activity_show_vacancy);
 		
 		//Get the previous intent
@@ -185,6 +189,7 @@ public class ShowVacancyActivity extends Activity
 			editor.commit();
 			menuId=R.menu.pc_vacancy;
 			
+			stopTime();
 			//If the user chose to see available PCs, call PCSoap
 			new PCSoap().execute();
 		}
@@ -195,6 +200,8 @@ public class ShowVacancyActivity extends Activity
 			editor.putString("Computer Type","mac");
 			editor.commit();
 			menuId=R.menu.mac_vacancy;
+			
+			stopTime();
 			//If the user chose to see available Macs, call MacSoap
 			new MacSoap().execute();
 		}
@@ -211,11 +218,25 @@ public class ShowVacancyActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
+		if(count!=1)
+		{
 		startTime = System.currentTimeMillis();
-
-        Log.i("Starting the clock", String.valueOf(startTime));
+		count=1;
+		}
+		
 	}
 	
+	public void stopTime()
+	{
+		//Stop the time
+        endTime = System.currentTimeMillis();
+        Log.d("End time", String.valueOf(endTime));
+        Log.d("start time", String.valueOf(startTime));
+        //Find the time by subtracting
+        String time = String.valueOf(endTime - startTime);
+        Log.d("Microinteractions", String.valueOf(useMicro));
+        Log.d("Lab Vacancy time", time);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
@@ -274,23 +295,11 @@ public class ShowVacancyActivity extends Activity
 	{
 		ArrayList<String> locations = new ArrayList<String>();
     	ArrayList<String> pcs = new ArrayList<String>();
-    	ArrayList<String> macs = new ArrayList<String>();
     	
     	protected void onPreExecute()
     	{
     		//Executed before the thread begins
 	         super.onPreExecute();
-	         
-	       //Stop the time
-	           endTime = System.currentTimeMillis();
-	           //Find the time by subtracting
-	           String time = String.valueOf(endTime - startTime);
-
-               Log.i("Start", String.valueOf(startTime));
-               Log.i("End", String.valueOf(endTime));
-               Log.i("Time", time);
-	           Log.d("Microinteractions", String.valueOf(useMicro));
-	           Log.d("PC Vacancy time", time);
 	         setContentView(R.layout.activity_show_vacancy);
 	         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 	         //Simulate starting the downloadBar
@@ -298,78 +307,77 @@ public class ShowVacancyActivity extends Activity
     	}
 		protected String doInBackground(Void...voids)
 		{
-//			SoapSerializationEnvelope envelope;
-//			String xml="";
-//			try {
-//	            // Create SOAP Connection
-//				HttpTransportSE htse = new HttpTransportSE(
-//						"https://atechlabs.wku.edu/soap/traffic/");
-//				
-//	            // Send SOAP Message to SOAP Server
-//	           String url = "https://atechlabs.wku.edu/soap/traffic/";
-//	           
-//	           envelope = createSOAPRequest(url);
-//	           
-//	           htse.call("https://atechlabs.wku.edu/soap/traffic/GetLabTraffic", 
-//						envelope);
-//
-//	            // Process the SOAP Response
-//	           Object response =  envelope.getResponse();
-//	           if(response instanceof Vector)
-//	           {
-//	        	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
-//	        	   xml = element0.toString();
-////	        	   Log.d("Response", xml);
-////	        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
-//	        	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
-//	        	   xml = xml +" "+element1.toString();
-////	        	   Log.d("Response", xml);
-//	        	   
-//	        	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
-//	   			
-//	   			String location="";
-//	   	    	
-//	   	    	Log.d("Before while loop", "I got here");
-//	   	    	
-//	   	    	while(xml.indexOf("<Location>", startIndex)>=0)
-//	   	    	{
-//	   	    		Log.d("While loop", "I got here");
-//	   	    		//Parse the location title from the XML
-//	   	    		startIndex = xml.indexOf("<Location>",startIndex);
-//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-//	   	    		stopIndex = xml.indexOf("</Location>", startIndex);
-//	   	    		location = xml.substring(startIndex, stopIndex);
-//	   	    		locations.add(location);
-//	   	    		startIndex = stopIndex+18;
-//	   	    		
-//	   	    		//Parse the number of units present from the XML
-//	   	    		startIndex = xml.indexOf("<PCs>", startIndex);
-//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-//	   	    		stopIndex = xml.indexOf("</PCs>", startIndex);
-//	   	    		Log.d("Present",xml.substring(startIndex, stopIndex));
-//	   	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
-//	   	    		
-//	   	    		//Parse the number of units in use from the XML
-//	   	    		startIndex = xml.indexOf("<PCsInUse>", startIndex);
-//	   	    		startIndex = xml.indexOf(">", startIndex)+1;
-//	   	    		stopIndex = xml.indexOf("</PCsInUse>", startIndex);
-//	   	    		Log.d("In use",xml.substring(startIndex, stopIndex));
-//	   	    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
-//	   	    		
-//	   	    		//Add the number of available PCs to the arrayList
-//	   	    		pcs.add(String.valueOf(present-inUse));
-//	   	    		
-//	   	    	}
-//	     
-//	           }
-//
-//	        } 
-//			catch (Exception e) 
-//			{
-//	            System.err.println("Error occurred while sending SOAP Request to Server");
-//	            e.printStackTrace();
-//	        }
-			String xml = "";
+			SoapSerializationEnvelope envelope;
+			String xml="";
+			try {
+	            // Create SOAP Connection
+				HttpTransportSE htse = new HttpTransportSE(
+						"https://atechlabs.wku.edu/soap/traffic/");
+				
+	            // Send SOAP Message to SOAP Server
+	           String url = "https://atechlabs.wku.edu/soap/traffic/";
+	           
+	           envelope = createSOAPRequest(url);
+	           
+	           htse.call("https://atechlabs.wku.edu/soap/traffic/GetLabTraffic", 
+						envelope);
+
+	            // Process the SOAP Response
+	           Object response =  envelope.getResponse();
+	           if(response instanceof Vector)
+	           {
+	        	   SoapPrimitive element0= (SoapPrimitive) ((Vector) response).elementAt(0);
+	        	   xml = element0.toString();
+//	        	   Log.d("Response", xml);
+//	        	   Log.d("Vector size", String.valueOf(((Vector) response).capacity()));
+	        	   SoapObject element1 = (SoapObject) ((Vector) response).elementAt(1);
+	        	   xml = xml +" "+element1.toString();
+//	        	   Log.d("Response", xml);
+	        	   
+	        	   int startIndex=1, counter=0, stopIndex=0, present=0, inUse=0;
+	   			
+	   			String location="";
+	   	    	
+	   	    	Log.d("Before while loop", "I got here");
+	   	    	
+	   	    	while(xml.indexOf("<Location>", startIndex)>=0)
+	   	    	{
+	   	    		Log.d("While loop", "I got here");
+	   	    		//Parse the location title from the XML
+	   	    		startIndex = xml.indexOf("<Location>",startIndex);
+	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+	   	    		stopIndex = xml.indexOf("</Location>", startIndex);
+	   	    		location = xml.substring(startIndex, stopIndex);
+	   	    		locations.add(location);
+	   	    		startIndex = stopIndex+18;
+	   	    		
+	   	    		//Parse the number of units present from the XML
+	   	    		startIndex = xml.indexOf("<PCs>", startIndex);
+	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+	   	    		stopIndex = xml.indexOf("</PCs>", startIndex);
+	   	    		Log.d("Present",xml.substring(startIndex, stopIndex));
+	   	    		present = Integer.valueOf(xml.substring(startIndex, stopIndex));
+	   	    		
+	   	    		//Parse the number of units in use from the XML
+	   	    		startIndex = xml.indexOf("<PCsInUse>", startIndex);
+	   	    		startIndex = xml.indexOf(">", startIndex)+1;
+	   	    		stopIndex = xml.indexOf("</PCsInUse>", startIndex);
+	   	    		Log.d("In use",xml.substring(startIndex, stopIndex));
+	   	    		inUse = Integer.valueOf(xml.substring(startIndex, stopIndex));
+	   	    		
+	   	    		//Add the number of available PCs to the arrayList
+	   	    		pcs.add(String.valueOf(present-inUse));
+	   	    		
+	   	    	}
+	     
+	           }
+
+	        } 
+			catch (Exception e) 
+			{
+	            System.err.println("Error occurred while sending SOAP Request to Server");
+	            e.printStackTrace();
+	        }
 			return xml;
 			
 			
@@ -505,31 +513,12 @@ public class ShowVacancyActivity extends Activity
 	{
 	
 		ArrayList<String> locations = new ArrayList<String>();
-		ArrayList<String> pcs = new ArrayList<String>();
 		ArrayList<String> macs = new ArrayList<String>();
 	
 	protected void onPreExecute()
 	{
 		//Executed before the thread begins
         super.onPreExecute();
-        
-      //Stop the time
-        endTime = System.currentTimeMillis();
-        //Find the time by subtracting
-        String time = String.valueOf(endTime - startTime);
-        Log.i("Start", String.valueOf(startTime));
-        Log.i("End", String.valueOf(endTime));
-        Log.i("Time", time);
-        try
-        {
-           info.add(info.size() + "=" + URLEncoder.encode("Mac vacancies:  " + time + " milliseconds" + " Microinteractions:" + Microinteractions.on, "UTF-8"));
-           new SendInfoToServerTask().execute();
-        }
-        catch (UnsupportedEncodingException e)
-        {
-           // TODO Auto-generated catch block
-           e.printStackTrace();
-        }
         setContentView(R.layout.activity_show_vacancy);
         downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
         //Simulate starting the downloadBar
