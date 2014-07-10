@@ -44,6 +44,11 @@ import com.google.android.glass.touchpad.GestureDetector;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+/**
+ * This is the activity for finding and displaying the WKU News, which is collected using the WordPress API. 
+ * @author peterkaminski
+ *
+ */
 public class NewsArticleActivity extends Activity
 {
    // JdomParser is a parser that is created by the Argo JSON Parser jar
@@ -81,14 +86,14 @@ public class NewsArticleActivity extends Activity
    {
       super.onCreate(savedInstanceState);
 
-      Log.d("OnCreate", "is called");
-
+      //This determines if there have already been some articles that were fetched from the internet,
+      //This usually happens when a user clicks on an article and swipes to go back to the list of articles.
       if (savedInstanceState != null)
       {
+         //Create an array list of strings that contains all the previously acquired headlines
          ArrayList<String> headlines = savedInstanceState
                .getStringArrayList("Headlines");
 
-         Log.d("MESSAGE", headlines.get(0));
          mCardScrollView = new CardScrollView(context);
          ScrollAdapter adapter = new ScrollAdapter(mCards);
          mCardScrollView
@@ -104,7 +109,8 @@ public class NewsArticleActivity extends Activity
                      // Set the current article to be whatever article the user
                      // is looking at.
                      webpageURL = articleObjects.get(position).getURL();
-
+                     
+                     //And access Glass's web browser intent, passing the URI as the webpage. 
                      Uri webpage = Uri.parse(webpageURL);
                      Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
                      if (intent.resolveActivity(getPackageManager()) != null)
@@ -119,29 +125,26 @@ public class NewsArticleActivity extends Activity
          mCardScrollView.activate();
       }
 
+      //Otherwise, they are accessing the news for the first time in the day or in a while
       else
       {
          /**
-          * setContentView opens the app with our launch layout, we will switch
-          * the layout within the AsyncTask
+          * This sets the initial launch screen for the application letting the
+          * user know we are pulling data from the network
           */
-
-         Log.d("OnCreate", "content happens");
-         setContentView(new TuggableView(this, R.layout.better_launch));
+         setContentView(R.layout.better_launch);
 
          // Set up the audio and gestures
          mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
          mGestureDetector = new GestureDetector(this)
                .setBaseListener(mBaseListener);
 
-         /**
-          * This sets the initial launch screen for the application letting the
-          * user know we are pulling data from the network
-          */
+         //Get the progress bar's instance. 
          downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
 
          // Start a new task which gets the actual WKU news from the internet.
          asyncTask = new NewsTask();
+         //Start the task
          asyncTask.execute();
 
       }
@@ -155,7 +158,7 @@ public class NewsArticleActivity extends Activity
       // with the articles they were last looking at
       if (asyncTask.getStatus() == AsyncTask.Status.FINISHED)
       {
-         // Make sure we have 5
+         // Make sure we have the appropriate amount of articles
          if (articleObjects.size() < 5)
          {
             //Make sure we have saved info
@@ -168,10 +171,6 @@ public class NewsArticleActivity extends Activity
             {
                onCreate(null);
             }
-         }
-         else
-         {
-            Log.d("OnCreate", "not explicitly called");
          }
       }
       super.onResume();
@@ -204,6 +203,9 @@ public class NewsArticleActivity extends Activity
    // Base listener is the gesture detector's listener
    private final GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener()
    {
+      /**
+       * We allow the user to refresh their feed with a two finger tap. 
+       */
       @Override
       public boolean onGesture(Gesture gesture)
       {
@@ -212,7 +214,8 @@ public class NewsArticleActivity extends Activity
          if (gesture == Gesture.TWO_TAP)
          {
             mAudioManager.playSoundEffect(Sounds.TAP);
-
+            //Call on create and fetch new articles. By passing null we make sure that the bundle has no articles,
+            //And that the AsyncTask will be executed again. 
             onCreate(null);
             return true;
          }
@@ -244,6 +247,9 @@ public class NewsArticleActivity extends Activity
    private class NewsTask extends AsyncTask<Void, Void, Bitmap[]>
    {
 
+      /*
+       * Before execution set the progress bar to be visible
+       */
       @Override
       protected void onPreExecute()
       {
@@ -253,8 +259,8 @@ public class NewsArticleActivity extends Activity
          downloadBar.setVisibility(0);
       }
 
-      // This access the WordPress api and finds information about the top 5
-      // posted articles, storing them as article objects
+      // This accesses the WordPress API and finds information about the top 5
+      // posted articles, storing them as article objects and sending their related image's bitmaps to the postExecute
       @Override
       protected Bitmap[] doInBackground(Void... voids)
       {
@@ -409,7 +415,6 @@ public class NewsArticleActivity extends Activity
          mCardScrollView.setAdapter(adapter);
          mCardScrollView.activate();
 
-         Log.d("OnPostExecute", "Card scroll view activated");
          // Dismiss the progress bar
          downloadBar.setVisibility(4);
          // Update the view
