@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -580,6 +582,9 @@ public class DisplayMenuActivity extends Activity
 						menu=menu+"\n"+item;
 						};
 						
+						//Remove HTML special characters from the menu string
+						menu = StringEscapeUtils.unescapeHtml4(menu).replaceAll(
+			                     "[^\\x20-\\x7e]", "");
 						allMenu.add(menu);
 						menu="";
 					}
