@@ -575,6 +575,9 @@ public class DisplayMenuActivity extends Activity
 						currentIndex=bufferReader.indexOf("</a>");
 						item=bufferReader.substring(0,currentIndex);
 						
+						//Remove HTML special characters from the item string
+						item = StringEscapeUtils.unescapeHtml4(item).replaceAll(
+			                     "[^\\x20-\\x7e]", "");
 						item=item.toLowerCase();
 						item="-"+item;
 						
@@ -582,9 +585,7 @@ public class DisplayMenuActivity extends Activity
 						menu=menu+"\n"+item;
 						};
 						
-						//Remove HTML special characters from the menu string
-						menu = StringEscapeUtils.unescapeHtml4(menu).replaceAll(
-			                     "[^\\x20-\\x7e]", "");
+						
 						allMenu.add(menu);
 						menu="";
 					}
