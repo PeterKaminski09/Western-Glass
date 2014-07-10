@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+//Class written by Dr. Ziegler to send info to a server on 000webhost.com
 public class WritePostExample {
    
    private final String USER_AGENT = "Mozilla/5.0";

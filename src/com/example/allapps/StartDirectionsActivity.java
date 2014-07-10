@@ -15,6 +15,11 @@ import android.view.MotionEvent;
 
 import com.google.android.glass.touchpad.GestureDetector;
 
+/**
+ * Activity that handles campus directions
+ * @author peterkaminski
+ *
+ */
 public class StartDirectionsActivity extends Activity
 {
    
@@ -51,50 +56,49 @@ public class StartDirectionsActivity extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_start_directions_app);
       
-      Log.d("Message", "Got to OnCreate");
-   
       try
       {
-    	  //This finds out what the user said
+    	  //This finds out what the user said when they started the directions app
     	  ArrayList<String> voiceResults = getIntent().getExtras()
     	         .getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
-    	  
+    	  //Store the user's voice trigger into a string, make it all lowercase to prevent bugs
     	  location = voiceResults.get(0).toLowerCase();
+    	  //Start the navigation by calling this method
     	  startNavigation();
     
       }
       catch(NullPointerException e)
       {
+         //Call the previous intent
     	 Intent previous = getIntent();
     	 try
     	 {
+    	    //Store the location as a preference from the previous bundle
     	 location = previous.getStringExtra("Place");
+    	 //Start navigation this time
     	 startNavigation();
     	 }
     	 catch(NullPointerException n)
     	 {
+    	    //If there is no location, then simply ask the user for the location again
     	 displaySpeechRecognizer();
     	 }
       }
       
-      //Now we want to determine what location the user meant, this may take some NLP
-      
-      
    }
    
+   //Shows the user a voice trigger and stores their command
    public void displaySpeechRecognizer() 
    {
-	   Log.d("Message", "Got here.");
        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Where would you like to go?");
        startActivityForResult(intent, SPEECH_REQUEST);
    }
 
-   @Override
+   @Override //Method that was written by google
    protected void onActivityResult(int requestCode, int resultCode,
            Intent data)
    {
-	   Log.d("Message", "Got here too");
 	   super.onActivityResult(requestCode, resultCode, data);
        if (requestCode == SPEECH_REQUEST && resultCode == RESULT_OK) 
        {
@@ -105,6 +109,7 @@ public class StartDirectionsActivity extends Activity
            //Make it lower case so we don't have to deal with the ambiguity of the English langauge and NLP
            location = spokenText;
            
+           //Start navigation this time
            startNavigation();
        }
        
@@ -145,17 +150,20 @@ public class StartDirectionsActivity extends Activity
    }
 
    
-   //This starts the navigation intent
+   //This starts the navigation intent that Google has built in to the GDK
    private void startNavigation(){
-      
+      //Find the latlong associated with that location
       String latLong = findLatLong(this.location);
+      //Create and start a navigation intent
       Intent navIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:ll=" + latLong + "&title="+ this.location.toUpperCase() + "&mode=w"));
       startActivity(navIntent);
       
    }
    
    
-   //Returns the LatLong coordinate based upon the location the user wishes to find
+   //Returns the LatLong coordinate based upon the location the user wishes to find, 
+   //all locations that were provided by IT, and their aliases, have been accounted for
+   //All latlong coordinates are the same as IT provided
    private String findLatLong(String location){
       //Set the default LatLong to that of Downing Student Union
       String latLong = "36.984874, -86.456781";

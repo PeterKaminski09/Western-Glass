@@ -14,10 +14,9 @@ import java.util.Date;
 
 /**
  * 
- * EventParse connects to the XML file on WKU events are returns all the pertinent information associated with 
- * said events
+ * EventParse connects to the XML file provided by IT that contains WKU events, and it returns all the pertinent information
+ * associated with said events
  * 
- * If you need to display all events, check out the RSS feed and associated classes. 
  * @author Peter Kaminski
  * EVENT ID's Athletics = 314 Arts = 315 Student Activities = 307 Campus Events= 313 ALL = all
  */

@@ -17,6 +17,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+
+/**
+ * @author Logan Houchens
+ */
 public class DiningInformation
 {
 
@@ -44,8 +48,9 @@ public class DiningInformation
         {
            // 1. Send a "GET" request, so that you can extract the form's data.
            String page = GetPageContent(url);
+           //The first string in this class should be the users login email and the second should be their password
            String postParams = getFormParams(page,
-                   "Peter.Kaminski09@gmail.com", "Gatton101");
+                   "LOGIN_EMAIL", "LOGIN_PWD");
 
            // 2. Construct above post's content and then send a POST request for
            // authentication
