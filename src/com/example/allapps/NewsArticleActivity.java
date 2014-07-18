@@ -81,7 +81,6 @@ public class NewsArticleActivity extends Activity
    {
       super.onCreate(savedInstanceState);
 
-      Log.d("OnCreate", "is called");
 
       if (savedInstanceState != null)
       {

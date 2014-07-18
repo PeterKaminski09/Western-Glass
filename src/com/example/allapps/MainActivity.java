@@ -157,7 +157,7 @@ public class MainActivity extends Activity
                case MENU:
                   intent = new Intent(context, DisplayMenuActivity.class);
                   startActivity(intent);
-                  mealCount++;
+                  menuCount++;
                   break;
 
                }

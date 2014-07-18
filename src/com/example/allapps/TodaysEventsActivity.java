@@ -117,12 +117,7 @@ public class TodaysEventsActivity extends Activity
                public void onItemClick(AdapterView<?> parent, View view,
                      int position, long id)
                {
-                  // Stop the time
-                  endTime = System.currentTimeMillis();
-                  // Find the time by subtracting
-                  String time = String.valueOf(endTime - startTime);
-                  Log.d("Microinteractions", String.valueOf(useMicro));
-                  Log.d("Events Activity time", time);
+                  
                   // Play a sound effect
                   mAudioManager.playSoundEffect(Sounds.TAP);
                   // Find the type of card that was pressed;
@@ -291,6 +286,12 @@ public class TodaysEventsActivity extends Activity
          // Dismiss the progress bar
          downloadBar.setVisibility(4);
          setContentView(mCardScrollView);
+         // Stop the time
+         endTime = System.currentTimeMillis();
+         // Find the time by subtracting
+         String time = String.valueOf(endTime - startTime);
+         Log.d("Microinteractions", String.valueOf(useMicro));
+         Log.d("Events Activity time", time);
          startActivity(showEvents);
 
       }

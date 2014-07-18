@@ -189,7 +189,6 @@ public class ShowVacancyActivity extends Activity
 			editor.commit();
 			menuId=R.menu.pc_vacancy;
 			
-			stopTime();
 			//If the user chose to see available PCs, call PCSoap
 			new PCSoap().execute();
 		}
@@ -201,7 +200,6 @@ public class ShowVacancyActivity extends Activity
 			editor.commit();
 			menuId=R.menu.mac_vacancy;
 			
-			stopTime();
 			//If the user chose to see available Macs, call MacSoap
 			new MacSoap().execute();
 		}
@@ -398,6 +396,7 @@ public class ShowVacancyActivity extends Activity
 		
 		protected void onPostExecute(String string)
 	    {
+		   
 		 
 			//Create a string of all locations, each on a new line
 			String allLocations="";
@@ -503,6 +502,8 @@ public class ShowVacancyActivity extends Activity
 			all.removeViewAt(0);
 			//Set content view to the XML layout file
 			setContentView(all);
+			
+
 	    		
 	    	}
 	    	
@@ -720,6 +721,8 @@ public class ShowVacancyActivity extends Activity
 		all.removeViewAt(0);
 		//Set content view to the XML layout file
 		setContentView(all);
+
+        
     		
     	}
 		

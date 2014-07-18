@@ -375,14 +375,7 @@ public class DisplayMenuActivity extends Activity
 	//This method calls the DownloadWebpageTask AsyncTask to download/display the menu using the URL passed from OnCreate
 	public void startDisplay(String url)
 	{
-		//Stop the time
-        endTime = (int) System.currentTimeMillis();
-        Log.d("End time",String.valueOf(endTime));
-        Log.d("Start time", String.valueOf(startTime));
-        //Find the time by subtracting
-        String time = String.valueOf(endTime - startTime);
-        Log.d("Microinteractions", String.valueOf(microOn));
-        Log.d("Fresh Menu time", time);
+		
 		new DownloadWebpageTask().execute(url);
 	}
 	
@@ -684,6 +677,14 @@ public class DisplayMenuActivity extends Activity
 				setContentView(newCard.getView());
 			};
 			
+			//Stop the time
+	        endTime = (int) System.currentTimeMillis();
+	        Log.d("End time",String.valueOf(endTime));
+	        Log.d("Start time", String.valueOf(startTime));
+	        //Find the time by subtracting
+	        String time = String.valueOf(endTime - startTime);
+	        Log.d("Microinteractions", String.valueOf(microOn));
+	        Log.d("Fresh Menu time", time);
 		}
 
 	}
