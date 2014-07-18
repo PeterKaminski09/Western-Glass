@@ -14,6 +14,8 @@ import com.google.android.glass.widget.CardScrollAdapter;
  * 
  * This is the generic adapter for card scrolling and can be found on
  * https://developers.google.com/glass/develop/gdk/ui-widgets
+ * 
+ * Code commented by Lydia Buzzard
  */
 public class ScrollAdapter extends CardScrollAdapter
 {

@@ -28,6 +28,8 @@ import com.google.android.glass.widget.CardScrollView;
  * This class creates and displays the main menu for the WKU Glass app. The main menu is displayed using a card scroll view and
  * features a welcome screen card, as well as a card for each individual section of the app. The sections can be accessed with a
  * tap from the user on the desired activity's card.
+ * 
+ * Code written and commented by Lydia Buzzard and Peter Kaminski
  */
 
 public class MainActivity extends Activity
@@ -37,10 +39,15 @@ public class MainActivity extends Activity
    public static List<String> info = new ArrayList<String>();
    long startTime, endTime;
 
+   //Card for the welcome screen
    Card mainCard;
+   //Context of the application
    Context context = this;
+   //Card list to hold all options
    List<Card> options;
+   //Scroll view to display all options
    CardScrollView menuScroll;
+   //Scroll adapter to supply scroll view with the card list
    ScrollAdapter menuAdapter;
 
    String activity;

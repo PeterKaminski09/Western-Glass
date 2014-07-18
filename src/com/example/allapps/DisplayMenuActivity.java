@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +51,8 @@ import com.google.android.glass.widget.CardScrollView;
  * 
  * Meal Ids must be added to the menu site URL in the createURL method. The meal Ids are as follows: breakfast = 1, brunch = 639,
  * lunch = 16, and dinner = 17. These have been hardcoded and can be found as static, final variables at the start of the class.
+ * 
+ * Code written and commented by Lydia Buzzard
  * 
  */
 public class DisplayMenuActivity extends Activity 
@@ -102,8 +106,6 @@ public class DisplayMenuActivity extends Activity
 	//OnResume retrieves the current time to be set as the "start" time of an interaction (testing only)
 	protected void onResume(){
 	   super.onResume();
-	   Log.d("onResume", "is called");
-	   Log.d("startTime", String.valueOf(startTime));
 	   if(count!=1)
 	   {
 		   startTime = (int) System.currentTimeMillis();
@@ -115,6 +117,7 @@ public class DisplayMenuActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		//Calls onResume method if it has yet to be called (testing only)
 		if(count==0)
 		{
 			onResume();
@@ -565,12 +568,16 @@ public class DisplayMenuActivity extends Activity
 						currentIndex=bufferReader.indexOf("</a>");
 						item=bufferReader.substring(0,currentIndex);
 						
+						//Remove HTML special characters from the item string
+						item = StringEscapeUtils.unescapeHtml4(item).replaceAll(
+			                     "[^\\x20-\\x7e]", "");
 						item=item.toLowerCase();
 						item="-"+item;
 						
 						//Add each item to the menu
 						menu=menu+"\n"+item;
 						};
+						
 						
 						allMenu.add(menu);
 						menu="";

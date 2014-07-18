@@ -34,6 +34,13 @@ import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+/**
+ * Class that displays the types of events users can see, based on the amount of times the user has clicked
+ * on that specific event. This class creates and EventParse object to find all the data that is associated with
+ * the events for today. 
+ * @author peterkaminski
+ *
+ */
 public class TodaysEventsActivity extends Activity
 {
    // For audio purposes
@@ -117,7 +124,9 @@ public class TodaysEventsActivity extends Activity
                public void onItemClick(AdapterView<?> parent, View view,
                      int position, long id)
                {
-                  
+
+                 
+
                   // Play a sound effect
                   mAudioManager.playSoundEffect(Sounds.TAP);
                   // Find the type of card that was pressed;
@@ -261,7 +270,9 @@ public class TodaysEventsActivity extends Activity
       @Override
       protected ArrayList<Event> doInBackground(Integer... integers)
       {
+         //Calls the eventParse class with the type of event that we want the user to see
          EventParse event = new EventParse(integers[0]);
+         //Then returns its events
          return event.getEvents();
       }
 

@@ -37,6 +37,12 @@ import android.os.Build;
 import argo.jdom.JsonRootNode;
 import argo.saj.InvalidSyntaxException;
 
+/**
+ * MealPlans is the activity which takes Logan's first version of the mealplans application and puts it onto
+ * the glass. 
+ * @author peterkaminski
+ *
+ */
 public class MealPlans extends Activity
 {
    //Progress Bar to display while the menu is loading.
@@ -48,7 +54,7 @@ public class MealPlans extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_meal_plans);
 
-      //Call the service
+      //Call the asynctask upon creation
      new MealPlansTask().execute();
    }
 
@@ -84,14 +90,15 @@ public class MealPlans extends Activity
       {  
          //Executed before the thread begins
          super.onPreExecute();
+         //Set the content to our generic loading screen
          setContentView(R.layout.better_launch);
          downloadBar = (ProgressBar) findViewById(R.id.downloadBar);
-         //Simulate starting the downloadBar
+         //Start the downloadBar
          downloadBar.setVisibility(0);
          
       }
 
-      //This access the WordPress api and finds information about the top 5 posted articles, storing them as article objects
+      //This calls Logan's code and retrieves the latest information regarding the mealplan usage for the user
       @Override
       protected DiningInformation doInBackground(Void... voids)
       {
@@ -103,9 +110,12 @@ public class MealPlans extends Activity
       @Override
       protected final void onPostExecute(DiningInformation dining)
       {
+         //Create a card and set the text of it to contain the mealplan info in its toString representation. 
          Card card = new Card(MealPlans.this);
          card.setText(dining.prettyRepresentation());
+         //Set the content view to the card. 
          setContentView(card.getView());
+         //Stop the download bar. 
          downloadBar.setVisibility(4);
       }
 

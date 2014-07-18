@@ -16,6 +16,11 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;
 
+/**
+ * Activity that shows the events that are found in TodaysEventsActivity
+ * @author peterkaminski
+ *
+ */
 public class ShowEventsActivity extends Activity
 {
 
@@ -32,12 +37,16 @@ public class ShowEventsActivity extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_show_events);
 
+      //Get the calling intent
       Intent intent = getIntent();
+      //Store the events from event_strings into an array list of string
       ArrayList<String> eventStrings = intent
             .getStringArrayListExtra("event_strings");
 
+      //Make sure there are events
       if (eventStrings.size() > 0)
       {
+         //For every event make a card and add it to the scroll view
          for (int i = 0; i < eventStrings.size(); i++)
          {
             Card card = new Card(this);
@@ -46,7 +55,7 @@ public class ShowEventsActivity extends Activity
          }
 
       }
-
+      //Otherwise, show that there are no events for that day
       else
       {
          Card card = new Card(this);

@@ -13,6 +13,8 @@ import com.google.android.glass.app.Card;
  * This class enables the user to turn microinteractions on/off and is only utilized for testing purposes. The last setting 
  * selected is saved using a SharedPreferences object and then referenced throughout the application to determine whether or not
  * a microinteraction should be implemented.
+ * 
+ * Code written and commented by Lydia Buzzard and Peter Kaminski
  */
 public class Microinteractions extends Activity 
 {
