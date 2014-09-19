@@ -213,6 +213,8 @@ public class ShowVacancyActivity extends Activity
 		}
 		
 	}
+	
+	
 	//When onResume is called, the current time will be retrieved as the "start" time of the interaction
 	@Override
 	public void onResume()
@@ -494,6 +496,8 @@ public class ShowVacancyActivity extends Activity
 			//Set content view to the XML layout file
 			setContentView(all);
 			
+			//Print time
+			stopTime();
 
 	    		
 	    	}
@@ -710,7 +714,8 @@ public class ShowVacancyActivity extends Activity
 		//Set content view to the XML layout file
 		setContentView(all);
 
-        
+		//Call the print time method
+        stopTime();
     		
     	}
 		
