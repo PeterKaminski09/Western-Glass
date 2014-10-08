@@ -108,7 +108,7 @@ public class DisplayMenuActivity extends Activity
 	   super.onResume();
 	   if(count!=1)
 	   {
-		   startTime = (int) System.currentTimeMillis();
+		   startTime = (int)System.currentTimeMillis();
 		   count=1;
 	   }
 	}

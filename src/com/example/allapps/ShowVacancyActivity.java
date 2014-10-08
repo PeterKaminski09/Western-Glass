@@ -222,23 +222,14 @@ public class ShowVacancyActivity extends Activity
 		super.onResume();
 		if(count!=1)
 		{
+		   Log.i("RESUMED", "We are resuming");
 		startTime = System.currentTimeMillis();
 		count=1;
 		}
 		
 	}
 	
-	public void stopTime()
-	{
-		//Stop the time
-        endTime = System.currentTimeMillis();
-        Log.d("End time", String.valueOf(endTime));
-        Log.d("start time", String.valueOf(startTime));
-        //Find the time by subtracting
-        String time = String.valueOf(endTime - startTime);
-        Log.d("Microinteractions", String.valueOf(useMicro));
-        Log.d("Lab Vacancy time", time);
-	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
@@ -497,7 +488,15 @@ public class ShowVacancyActivity extends Activity
 			setContentView(all);
 			
 			//Print time
-			stopTime();
+			//Stop the time
+            endTime = (int) System.currentTimeMillis();
+            Log.d("End time",String.valueOf(endTime));
+            Log.d("Start time", String.valueOf(startTime));
+            //Find the time by subtracting
+            String time = String.valueOf(endTime - startTime);
+            Log.d("Microinteractions", String.valueOf(useMicro));
+            Log.d("Lab vacancy", time);
+			
 
 	    		
 	    	}
@@ -714,8 +713,15 @@ public class ShowVacancyActivity extends Activity
 		//Set content view to the XML layout file
 		setContentView(all);
 
-		//Call the print time method
-        stopTime();
+		//Print time
+        //Stop the time
+        endTime = (int) System.currentTimeMillis();
+        Log.d("End time",String.valueOf(endTime));
+        Log.d("Start time", String.valueOf(startTime));
+        //Find the time by subtracting
+        String time = String.valueOf(endTime - startTime);
+        Log.d("Microinteractions", String.valueOf(useMicro));
+        Log.d("Lab vacancy", time);
     		
     	}
 		
