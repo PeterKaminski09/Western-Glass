@@ -289,10 +289,8 @@ public class DisplayMenuActivity extends Activity
 	public void setDates()
 	{
 		//Set values for the start/end of the school year
-		endOfYear.set(2014, 4, 15);
-		startOfYear.set(2013, 7, 25);
-		//Set fake current date for testing
-		now.set(2014, 4, 5);
+		endOfYear.set(2015, 5, 15);
+		startOfYear.set(2014, 8, 25);
 	}
 	
 	//This method retrieves user preferences set within the FreshMenuSettings activity. If no preferences have been set, default
