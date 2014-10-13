@@ -422,7 +422,7 @@ public class ShowVacancyActivity extends Activity
 			
 			//Create list of locations
 			locationList.setText(allLocations);
-			locationList.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
+			locationList.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
 			locationParams.addRule(RelativeLayout.BELOW, locHeading.getId());
 			locationList.setLayoutParams(locationParams);
 			
@@ -447,7 +447,7 @@ public class ShowVacancyActivity extends Activity
 			//Create list of units available
 			TextView availableList = new TextView(context);
 			availableList.setText(allAvailable);
-			availableList.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+			availableList.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 			//Set the parameters of the available list so that it appears below the heading and in the center of its column.
 			unitParams.addRule(RelativeLayout.BELOW, unitHeading.getId());
 			unitParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
