@@ -467,7 +467,6 @@ public class ShowVacancyActivity extends Activity
 			units.setLayoutParams(listParams);
 		
 			
-			//PROBLEM OCCURS HERE
 			if(showAll!=null)
 			{
 			//Add locations and units to the overall display
@@ -502,7 +501,7 @@ public class ShowVacancyActivity extends Activity
 	    	}
 	    	
 	    }
-	//This AsyncTask is called when PC vacancies should be displayed. It retrieves the vacancy information (location and number of
+	//This AsyncTask is called when Mac vacancies should be displayed. It retrieves the vacancy information (location and number of
 	//units available) using a SOAP service and displays them in a custom XML layout.
 	private class MacSoap extends AsyncTask<Void, Void, String>
 	{
