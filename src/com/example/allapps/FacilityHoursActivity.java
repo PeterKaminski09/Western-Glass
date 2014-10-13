@@ -65,11 +65,10 @@ public class FacilityHoursActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		//Set a fake current date for testing
-		now.set(2014, 7, 26);
+		
 		//Set start/end of year
 		startOfYear.set(2014, 7, 25);
-		endOfYear.set(2015, 4, 25);
+		endOfYear.set(2015, 4, 15);
 		
 		//If the current date falls during the school year, start AsyncTask to find open restaurants
 		if(now.after(startOfYear) && now.before(endOfYear))
