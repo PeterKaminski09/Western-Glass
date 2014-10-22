@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.glass.app.Card;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 /*
  * This object class is called throughout the application to create adpaters for card scroll views. The ScrollAdapter is passed a 
@@ -19,9 +20,9 @@ import com.google.android.glass.widget.CardScrollAdapter;
  */
 public class ScrollAdapter extends CardScrollAdapter
 {
-	List<Card> mCards = new ArrayList<Card>();
+	List<CardBuilder> mCards = new ArrayList<CardBuilder>();
 	
-	public ScrollAdapter(List<Card> cards)
+	public ScrollAdapter(List<CardBuilder> cards)
 	{
 		mCards = cards;
 	}
@@ -46,7 +47,7 @@ public class ScrollAdapter extends CardScrollAdapter
     @Override
     public int getViewTypeCount() 
     {
-        return Card.getViewTypeCount();
+        return CardBuilder.getViewTypeCount();
     }
 
     @Override
