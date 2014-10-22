@@ -23,12 +23,8 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -41,7 +37,7 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
 /**
@@ -63,7 +59,7 @@ public class NewsArticleActivity extends Activity
    private String htmlContents;
 
    // Card scrolling objects
-   private List<Card> mCards = new ArrayList<Card>();
+   private List<CardBuilder> mCards = new ArrayList<CardBuilder>();
    private CardScrollView mCardScrollView;
    private Context context = this;
 
