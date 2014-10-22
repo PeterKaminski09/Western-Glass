@@ -27,27 +27,7 @@ public class StartDirectionsActivity extends Activity
    //Gesture detector lets us know when a tap has been sent
    private GestureDetector mGestureDetector;
    private String location;
-   private static final int SPEECH_REQUEST = 0;
-  
-   /*
-   //This listener displays the options menu to the user whenever the user taps on the glass
-   //Base listener is the gesture detector's listener
-   private final GestureDetector.BaseListener mBaseListener = new GestureDetector.BaseListener(){
-      @Override
-      public boolean onGesture(Gesture gesture)
-      {
-         if(gesture == Gesture.TAP){
-            mAudioManager.playSoundEffect(Sounds.TAP);
-            openOptionsMenu();
-            return true;
-         }
-         else{
-            return false;
-         }
-      }
-   };
-   */
-   
+   private static final int SPEECH_REQUEST = 0; 
    
    @Override
    protected void onCreate(Bundle savedInstanceState)

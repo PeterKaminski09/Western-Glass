@@ -47,7 +47,7 @@ public class DiningInformation
            String page = GetPageContent(url);
            //The first string in this class should be the users login email and the second should be their password
            String postParams = getFormParams(page,
-                   "LOGIN_EMAIL", "LOGIN_PWD");
+                   "Peter.Kaminski09@gmail.com", "Gatton101");
 
            // 2. Construct above post's content and then send a POST request for
            // authentication
