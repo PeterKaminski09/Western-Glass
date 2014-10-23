@@ -9,12 +9,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.android.glass.app.Card;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
  * This class displays the computer lab vacancy main menu. The menu is contained in a card scroll view with a welcome card, a PC
@@ -26,13 +25,13 @@ import com.google.android.glass.widget.CardScrollView;
 public class LabMenuActivity extends Activity 
 {
 	//Card for the welcome screen
-	Card menuCard;
+	CardBuilder menuCard;
 	//PC option card
-	Card pc;
+	CardBuilder pc;
 	//Mac option card
-	Card mac;
+	CardBuilder mac;
 	//List to contain welcome card and both options
-	List<Card> cardList;
+	List<CardBuilder> cardList;
 	//Scroll view to display card list
 	CardScrollView mainMenu;
 	//Adapter to supply scroll view with card list
@@ -44,22 +43,22 @@ public class LabMenuActivity extends Activity
 		super.onCreate(savedInstanceState);
 		
 		//Create a menu card
-		menuCard = new Card(this);
+		menuCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		menuCard.setText("WKU Computer Lab Vacancies");
 		menuCard.setFootnote("Swipe to select a computer option.");
 		
 		//Create a PC Card
-		pc = new Card(this);
+		pc =new CardBuilder(this, CardBuilder.Layout.TEXT);
 		pc.setText("PC");
 		pc.setFootnote("Shows available Windows PCs");
 		
 		//Create a Mac Card
-		mac = new Card(this);
+		mac = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		mac.setText("Mac");
 		mac.setFootnote("Shows available Macintosh computers");
 		
 		//Create a new card list
-		cardList = new ArrayList<Card>();
+		cardList = new ArrayList<CardBuilder>();
 		//Add three previously created cards to the list
 		cardList.add(menuCard);
 		cardList.add(pc);

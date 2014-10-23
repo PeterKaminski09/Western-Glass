@@ -3,11 +3,9 @@ package com.example.allapps;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -24,13 +22,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 
 import com.google.android.glass.app.Card;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
  * 
@@ -60,14 +57,14 @@ public class DisplayMenuActivity extends Activity
 	//This string will later contain the items on the Fresh Menu
 	String menu;
 	//List of Cards to display each station at Fresh
-	List<Card> mCards = new ArrayList<Card>();
+	List<CardBuilder> mCards = new ArrayList<CardBuilder>();
 	//List of cards to display possible meal options, if microinteractions are turned off.
-	List<Card> mealCards = new ArrayList<Card>();
+	List<CardBuilder> mealCards = new ArrayList<CardBuilder>();
 	//Calendar object to determine the current time and date.
 	Calendar now = Calendar.getInstance();
 	
 	//Card to display the lack of a menu, if necessary
-	Card newCard;
+	CardBuilder newCard;
 	//Create Calendar instance for the start of the school year
 	Calendar startOfYear = Calendar.getInstance();
 	//Create Calendar instance for the end of the school year
@@ -158,7 +155,7 @@ public class DisplayMenuActivity extends Activity
 			//If no menu is available, notify the user with a card
 			if(!menuAvailable())
 			{
-				newCard = new Card(this);
+				newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 				newCard.setText("Fresh Menu is unavailable in summer months.");
 				newCard.setFootnote("Sorry :(");
 				setContentView(newCard.getView());
@@ -221,7 +218,7 @@ public class DisplayMenuActivity extends Activity
 		//card list
 		for(counter=0; counter<meals.size(); counter++)
 		{
-			Card newCard = new Card(this);
+		   CardBuilder newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 			newCard.setText(meals.get(counter));
 			newCard.setFootnote("Tap to view menu.");
 			mealCards.add(newCard);
@@ -237,7 +234,11 @@ public class DisplayMenuActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
 			{
-				String name = mealCards.get(position).getText().toString();
+			   /**
+			    * READ THIS. .getText() is now deprecated! 
+			    */
+				String name = mealCards.get(position).toString();
+				      //mealCards.get(position).getText().toString();
 				//When user taps, check which meal he/she has selected
 				switch(name)
 				{

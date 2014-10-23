@@ -23,12 +23,8 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -41,7 +37,7 @@ import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
 /**
@@ -63,7 +59,7 @@ public class NewsArticleActivity extends Activity
    private String htmlContents;
 
    // Card scrolling objects
-   private List<Card> mCards = new ArrayList<Card>();
+   private List<CardBuilder> mCards = new ArrayList<CardBuilder>();
    private CardScrollView mCardScrollView;
    private Context context = this;
 
@@ -95,31 +91,32 @@ public class NewsArticleActivity extends Activity
 
          mCardScrollView = new CardScrollView(context);
          ScrollAdapter adapter = new ScrollAdapter(mCards);
-         mCardScrollView
-               .setOnItemClickListener(new AdapterView.OnItemClickListener()
-               {
-
-                  @Override
-                  public void onItemClick(AdapterView<?> parent, View view,
-                        int position, long id)
-                  {
-                     mAudioManager.playSoundEffect(Sounds.TAP);
-
-                     // Set the current article to be whatever article the user
-                     // is looking at.
-                     webpageURL = articleObjects.get(position).getURL();
-                     
-                     //And access Glass's web browser intent, passing the URI as the webpage. 
-                     Uri webpage = Uri.parse(webpageURL);
-                     Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-                     if (intent.resolveActivity(getPackageManager()) != null)
-                     {
-                        startActivity(intent);
-                     }
-
-                  }
-
-               });
+         setupClickListener();
+//         mCardScrollView
+//               .setOnItemClickListener(new AdapterView.OnItemClickListener()
+//               {
+//
+//                  @Override
+//                  public void onItemClick(AdapterView<?> parent, View view,
+//                        int position, long id)
+//                  {
+//                     mAudioManager.playSoundEffect(Sounds.TAP);
+//
+//                     // Set the current article to be whatever article the user
+//                     // is looking at.
+//                     webpageURL = articleObjects.get(position).getURL();
+//                     
+//                     //And access Glass's web browser intent, passing the URI as the webpage. 
+//                     Uri webpage = Uri.parse(webpageURL);
+//                     Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+//                     if (intent.resolveActivity(getPackageManager()) != null)
+//                     {
+//                        startActivity(intent);
+//                     }
+//
+//                  }
+//
+//               });
          mCardScrollView.setAdapter(adapter);
          mCardScrollView.activate();
       }
@@ -149,6 +146,17 @@ public class NewsArticleActivity extends Activity
       }
    }
 
+   private void setupClickListener() {
+      mCardScrollView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+              AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+              am.playSoundEffect(Sounds.TAP);
+          }
+      });
+  }
+   
    @Override
    protected void onResume()
    {
@@ -376,11 +384,18 @@ public class NewsArticleActivity extends Activity
          //For all the results, create a card and add it to the list. 
          for (int i = 0; i < results.length; i++)
          {
-            Card card;
-            card = new Card(context);
+//            Card card;
+//            card = new Card(context);
+//            card.setText(articleObjects.get(i).getTitle());
+//            card.setFootnote("Tap for details");
+//            card.setImageLayout(Card.ImageLayout.LEFT);
+//            card.addImage(results[i]);
+//            mCards.add(card);
+            
+            //Updating to cardbuilder
+            CardBuilder card = new CardBuilder(context, CardBuilder.Layout.COLUMNS);
             card.setText(articleObjects.get(i).getTitle());
             card.setFootnote("Tap for details");
-            card.setImageLayout(Card.ImageLayout.LEFT);
             card.addImage(results[i]);
             mCards.add(card);
          }

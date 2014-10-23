@@ -1,19 +1,15 @@
 package com.example.allapps;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import android.app.Activity;
@@ -25,13 +21,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
 import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
 /**
@@ -48,7 +43,7 @@ public class TodaysEventsActivity extends Activity
    public static List<String> info = new ArrayList<String>();
 
    // Card scrolling objects
-   private List<Card> mCards = new ArrayList<Card>();
+   private List<CardBuilder> mCards = new ArrayList<CardBuilder>();
    private CardScrollView mCardScrollView;
    private Context context = this;
 
@@ -130,7 +125,9 @@ public class TodaysEventsActivity extends Activity
                   // Play a sound effect
                   mAudioManager.playSoundEffect(Sounds.TAP);
                   // Find the type of card that was pressed;
-                  String type = mCards.get(position).getText().toString();
+                  //String type = mCards.get(position).getText().toString();
+                  String type = mCards.get(position).toString();
+                  Log.d("TYPE STRING OH GOD", type);
                   // Now run through the available options and start an event
                   // task based on what was clicked.
                   switch (type)
@@ -212,7 +209,7 @@ public class TodaysEventsActivity extends Activity
          {
             // For each element in the map, create a card based on the most used
             // option
-            Card card = new Card(TodaysEventsActivity.this);
+            CardBuilder card = new CardBuilder(TodaysEventsActivity.this, CardBuilder.Layout.TEXT);
 
             switch (sorted_map.firstEntry().getKey())
             {

@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.glass.app.Card;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
 /*
@@ -40,11 +41,11 @@ public class MainActivity extends Activity
    long startTime, endTime;
 
    //Card for the welcome screen
-   Card mainCard;
+   CardBuilder mainCard;
    //Context of the application
    Context context = this;
    //Card list to hold all options
-   List<Card> options;
+   List<CardBuilder> options;
    //Scroll view to display all options
    CardScrollView menuScroll;
    //Scroll adapter to supply scroll view with the card list
@@ -80,8 +81,8 @@ public class MainActivity extends Activity
       startTime = System.currentTimeMillis();
       super.onCreate(savedInstanceState);
 
-      options = new ArrayList<Card>();
-      mainCard = new Card(this);
+      options = new ArrayList<CardBuilder>();
+      mainCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 
       // Set text for the welcome screen/card
       mainCard.setText("Welcome to the WKU Glass App");
@@ -117,7 +118,8 @@ public class MainActivity extends Activity
                long id)
          {
             Intent intent;
-            String type = options.get(position).getText().toString();
+            //ANOTHER INSTANCE OF TOSTRING BEING USED INTSTEAD OF GETTEXT
+            String type = options.get(position).toString();
             // Now run through the available options and start an event
             // task based on what was clicked.
 

@@ -15,17 +15,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 
 import com.google.android.glass.app.Card;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
  * This class displays a list of currently open campus dining facilities based on operation hours found in the XML file at the 
@@ -59,7 +57,7 @@ public class FacilityHoursActivity extends Activity
 	ProgressBar downloadBar;
 	
 	//List of Cards for displaying open restaurants
-	List<Card> allCards;
+	List<CardBuilder> allCards;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -373,8 +371,8 @@ public class FacilityHoursActivity extends Activity
 		protected void onPostExecute(String[] open)
 		{
 			//Local variables
-			Card newCard;
-			allCards = new ArrayList<Card>();
+			CardBuilder newCard;
+			allCards = new ArrayList<CardBuilder>();
 			CardScrollView scroll = new CardScrollView(ref);
 			ScrollAdapter adapter = new ScrollAdapter(allCards);
 			
@@ -387,7 +385,7 @@ public class FacilityHoursActivity extends Activity
 					if(name != null && name != "")
 					{
 						//Create new Card object
-						newCard = new Card(ref);
+						newCard = new CardBuilder(ref, CardBuilder.Layout.TEXT);
 						//Set text of card to the name of the restaurant
 						newCard.setText(name);
 						//Set footnote to notify user of a possible interaction (tapping for directions
@@ -402,8 +400,9 @@ public class FacilityHoursActivity extends Activity
 					@Override
 					public void onItemClick(AdapterView<?> adapter, View v, int position, long id)
 					{
+					   //Another instance of getText() being replaced
 						//Get text of card to set as location title
-						String location=(String) allCards.get(position).getText();
+						String location=(String) allCards.get(position).toString();
 						//Create new intent calling the StartDirectionsActivity class
 						Intent intent = new Intent(ref, StartDirectionsActivity.class);
 						//Attach the location title as an Extra with the intent

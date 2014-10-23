@@ -14,12 +14,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.google.android.glass.app.Card;
-import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
  * This class sets and stores user preferences for the Fresh Menu portion of the application. When microinteractions are enabled,
@@ -42,9 +41,9 @@ import com.google.android.glass.widget.CardScrollView;
 public class FreshMenuSettings extends Activity 
 {
 	//Card list to hold all settings options
-	List<Card> allCards;
+	List<CardBuilder> allCards;
 	//Card instance to add to above card list
-	Card newCard;
+	CardBuilder newCard;
 	//Scroll view for the card list of options
 	CardScrollView optionScroll;
 	//Adapter to supply scroll view with card list
@@ -70,34 +69,34 @@ public class FreshMenuSettings extends Activity
 		super.onCreate(savedInstanceState);
 		
 		//Initialize all local variables
-		allCards = new ArrayList<Card>();
+		allCards = new ArrayList<CardBuilder>();
 		optionScroll = new CardScrollView(this);
 		optionAdapter = new ScrollAdapter(allCards);
 		mealTimes= getSharedPreferences("Menu Times", Context.MODE_PRIVATE);
 		editor= mealTimes.edit();
 		
 		//Create a card for each possible meal to be changed
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		newCard.setText("Set Breakfast Cut-Off Time");
 		newCard.setFootnote("Display breakfast menu until this time");
 		allCards.add(newCard);
 		
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		newCard.setText("Set Brunch Cut-Off Time");
 		newCard.setFootnote("Display brunch menu until this time (weekends only)");
 		allCards.add(newCard);
 		
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		newCard.setText("Set Lunch Cut-Off Time");
 		newCard.setFootnote("Display lunch menu until this time");
 		allCards.add(newCard);
 		
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		newCard.setText("Set Dinner Cut-Off Time");
 		newCard.setFootnote("Display dinner menu until this time");
 		allCards.add(newCard);
 		
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 		newCard.setText("Delete saved preferences.");
 		newCard.setFootnote("Restores all meal times to default settings.");
 		allCards.add(newCard);
