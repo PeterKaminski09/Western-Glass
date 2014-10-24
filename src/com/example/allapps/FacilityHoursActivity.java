@@ -59,6 +59,7 @@ public class FacilityHoursActivity extends Activity
 	
 	//List of Cards for displaying open restaurants
 	List<CardBuilder> allCards;
+	List<String> cardStrings;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -79,7 +80,7 @@ public class FacilityHoursActivity extends Activity
 		else
 		{
 			//Create new card
-			Card newCard = new Card(ref);
+			CardBuilder newCard = new CardBuilder(ref, CardBuilder.Layout.TEXT);
 			//Set text of card to notify the user that open restaurants cannot be found
 			newCard.setText("Restaurant hours are unavailable during summer months.");
 			//Apologize to the user
@@ -131,6 +132,7 @@ public class FacilityHoursActivity extends Activity
 	         //Simulate starting the downloadBar
 	         downloadBar.setVisibility(0);
 		}
+		
 		protected String[]  doInBackground(Void...voids)
 		{
 			
@@ -374,6 +376,7 @@ public class FacilityHoursActivity extends Activity
 			//Local variables
 			CardBuilder newCard;
 			allCards = new ArrayList<CardBuilder>();
+			cardStrings = new ArrayList<String>();
 			CardScrollView scroll = new CardScrollView(ref);
 			ScrollAdapter adapter = new ScrollAdapter(allCards);
 			
@@ -389,6 +392,8 @@ public class FacilityHoursActivity extends Activity
 						newCard = new CardBuilder(ref, CardBuilder.Layout.TEXT);
 						//Set text of card to the name of the restaurant
 						newCard.setText(name);
+						//add the string to card strings
+						cardStrings.add(name);
 						//Set footnote to notify user of a possible interaction (tapping for directions
 						newCard.setFootnote("Tap for directions.");
 						//Add newly created card to the card list
@@ -403,7 +408,8 @@ public class FacilityHoursActivity extends Activity
 					{
 					   //Another instance of getText() being replaced
 						//Get text of card to set as location title
-						String location=(String) allCards.get(position).toString();
+						//String location=(String) allCards.get(position).toString();
+					    String location = cardStrings.get(position);
 						Log.i("LOCATION", location);
 						//Create new intent calling the StartDirectionsActivity class
 						Intent intent = new Intent(ref, StartDirectionsActivity.class);
@@ -423,9 +429,10 @@ public class FacilityHoursActivity extends Activity
 			//If no locations are open, create a card that notifies the user
 			else
 			{
-				newCard = new Card(ref);
+				newCard = new CardBuilder(ref, CardBuilder.Layout.TEXT);
 				//Set card text to tell user that no locations are open
 				newCard.setText("No locations are currently open.");
+				
 				//Apologize to user in footnote
 				newCard.setFootnote("Sorry :(");
 				//Display the card
