@@ -117,9 +117,12 @@ public class MainActivity extends Activity
          public void onItemClick(AdapterView<?> adapter, View v, int position,
                long id)
          {
+            
             Intent intent;
             //ANOTHER INSTANCE OF TOSTRING BEING USED INTSTEAD OF GETTEXT
             String type = options.get(position).toString();
+            
+            Log.d("TYPE", type);
             // Now run through the available options and start an event
             // task based on what was clicked.
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.util.Log;
+
 /**
  * 
  * EventParse connects to the XML file provided by IT that contains WKU events, and it returns all the pertinent information
@@ -58,6 +60,10 @@ public class EventParse {
 		}
 		//Append the date to the urlString
 		urlString += findTodaysDate();
+		//Testing methods
+		Log.d("Date", findTodaysDate());
+		Log.d("URLSTRING", urlString);
+		
 		//Find and store the xml code
 		StringBuffer source = new StringBuffer(fetchXML(urlString));
 		
