@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -403,6 +404,7 @@ public class FacilityHoursActivity extends Activity
 					   //Another instance of getText() being replaced
 						//Get text of card to set as location title
 						String location=(String) allCards.get(position).toString();
+						Log.i("LOCATION", location);
 						//Create new intent calling the StartDirectionsActivity class
 						Intent intent = new Intent(ref, StartDirectionsActivity.class);
 						//Attach the location title as an Extra with the intent
