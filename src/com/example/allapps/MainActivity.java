@@ -46,6 +46,7 @@ public class MainActivity extends Activity
    Context context = this;
    //Card list to hold all options
    List<CardBuilder> options;
+   List<String> cardStrings;
    //Scroll view to display all options
    CardScrollView menuScroll;
    //Scroll adapter to supply scroll view with the card list
@@ -82,6 +83,8 @@ public class MainActivity extends Activity
       super.onCreate(savedInstanceState);
 
       options = new ArrayList<CardBuilder>();
+      cardStrings = new ArrayList<String>();
+      
       mainCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 
       // Set text for the welcome screen/card
@@ -120,8 +123,8 @@ public class MainActivity extends Activity
             
             Intent intent;
             //ANOTHER INSTANCE OF TOSTRING BEING USED INTSTEAD OF GETTEXT
-            String type = options.get(position).toString();
-            
+            //String type = options.get(position).toString();
+            String type = cardStrings.get(position);
             Log.d("TYPE", type);
             // Now run through the available options and start an event
             // task based on what was clicked.
@@ -255,13 +258,14 @@ public class MainActivity extends Activity
       {
          // For each element in the map, create a card based on the most used
          // option
-         Card card = new Card(MainActivity.this);
-
+         CardBuilder card = new CardBuilder(MainActivity.this, CardBuilder.Layout.TEXT);
+         
          switch (sorted_map.firstEntry().getKey())
          {
          case LAB:
             // For each card set the text, then clear the sorted map. Remove
             // the case just used, and then resort the map
+            cardStrings.add(LAB);
             card.setText(LAB);
             sorted_map.clear();
             map.remove(LAB);
@@ -269,36 +273,42 @@ public class MainActivity extends Activity
             break;
          case MENU:
             card.setText(MENU);
+            cardStrings.add(MENU);
             sorted_map.clear();
             map.remove(MENU);
             sorted_map.putAll(map);
             break;
          case EVENT:
             card.setText(EVENT);
+            cardStrings.add(EVENT);
             sorted_map.clear();
             map.remove(EVENT);
             sorted_map.putAll(map);
             break;
          case DIRECTIONS:
             card.setText(DIRECTIONS);
+            cardStrings.add(DIRECTIONS);
             sorted_map.clear();
             map.remove(DIRECTIONS);
             sorted_map.putAll(map);
             break;
          case OPEN:
             card.setText(OPEN);
+            cardStrings.add(OPEN);
             sorted_map.clear();
             map.remove(OPEN);
             sorted_map.putAll(map);
             break;
          case NEWS:
             card.setText(NEWS);
+            cardStrings.add(NEWS);
             sorted_map.clear();
             map.remove(NEWS);
             sorted_map.putAll(map);
             break;
          case MEALPLAN:
             card.setText(MEALPLAN);
+            cardStrings.add(MEALPLAN);
             sorted_map.clear();
             map.remove(MEALPLAN);
             sorted_map.putAll(map);
