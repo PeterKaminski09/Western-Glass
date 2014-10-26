@@ -21,7 +21,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 
@@ -119,10 +118,7 @@ public class MainActivity extends Activity
          {
             
             Intent intent;
-            //ANOTHER INSTANCE OF TOSTRING BEING USED INTSTEAD OF GETTEXT
-            String type = options.get(position).toString();
             
-            Log.d("TYPE", type);
             // Now run through the available options and start an event
             // task based on what was clicked.
 
@@ -132,9 +128,10 @@ public class MainActivity extends Activity
                resetUserPrefs();
                openOptionsMenu();
             }
+            //This doesn't work yet, but I think it will once I understand this map thing better.
             else
             {
-               switch (type)
+               switch (findMapElement(position))
                {
                case LAB:
                   intent = new Intent(context, LabMenuActivity.class);
@@ -171,6 +168,8 @@ public class MainActivity extends Activity
                   startActivity(intent);
                   menuCount++;
                   break;
+            	
+            	
 
                }
 
@@ -209,7 +208,7 @@ public class MainActivity extends Activity
       Log.i("Click counts", sorted_map.toString());
 
    }
-
+   
    // Update counts refreshes the user preferences.
    public void updateCounts()
    {
@@ -255,7 +254,7 @@ public class MainActivity extends Activity
       {
          // For each element in the map, create a card based on the most used
          // option
-         Card card = new Card(MainActivity.this);
+         CardBuilder card = new CardBuilder(MainActivity.this, CardBuilder.Layout.TEXT);
 
          switch (sorted_map.firstEntry().getKey())
          {
@@ -305,12 +304,71 @@ public class MainActivity extends Activity
             break;
 
          }
-         card.setFootnote("Tap for events");
+         
          // Then add the card to the array list.
          options.add(card);
 
       }
 
+   }
+   
+   public String findMapElement(int index)
+   {
+	   int counter = 0;
+	   String element="";
+	   findCounts();
+	   
+	   while(counter < index)
+	   {
+		   switch (sorted_map.firstEntry().getKey())
+	         {
+	         case LAB:
+	        	 element = LAB;
+	            sorted_map.clear();
+	            map.remove(LAB);
+	            sorted_map.putAll(map);
+	            break;
+	         case MENU:
+	        	 element = MENU;
+	            sorted_map.clear();
+	            map.remove(MENU);
+	            sorted_map.putAll(map);
+	            break;
+	         case EVENT:
+	        	 element = EVENT;
+	            sorted_map.clear();
+	            map.remove(EVENT);
+	            sorted_map.putAll(map);
+	            break;
+	         case DIRECTIONS:
+	        	 element = DIRECTIONS;
+	            sorted_map.clear();
+	            map.remove(DIRECTIONS);
+	            sorted_map.putAll(map);
+	            break;
+	         case OPEN:
+	        	 element = OPEN;
+	            sorted_map.clear();
+	            map.remove(OPEN);
+	            sorted_map.putAll(map);
+	            break;
+	         case NEWS:
+	        	 element = NEWS;
+	            sorted_map.clear();
+	            map.remove(NEWS);
+	            sorted_map.putAll(map);
+	            break;
+	         case MEALPLAN:
+	        	 element = MEALPLAN;
+	            sorted_map.clear();
+	            map.remove(MEALPLAN);
+	            sorted_map.putAll(map);
+	            break;
+
+	         }
+	   }
+	   
+	   return element;
    }
 
    @Override
