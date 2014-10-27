@@ -49,6 +49,8 @@ public class MainActivity extends Activity
    CardScrollView menuScroll;
    //Scroll adapter to supply scroll view with the card list
    ScrollAdapter menuAdapter;
+   //ArrayList<String> to store the order of the cards in the main menu
+   ArrayList<String> orderedCards;
 
    String activity;
 
@@ -128,10 +130,10 @@ public class MainActivity extends Activity
                resetUserPrefs();
                openOptionsMenu();
             }
-            //This doesn't work yet, but I think it will once I understand this map thing better.
+            //THIS WORKS
             else
             {
-               switch (findMapElement(position))
+               switch (findMapElement(position-1))
                {
                case LAB:
                   intent = new Intent(context, LabMenuActivity.class);
@@ -250,6 +252,7 @@ public class MainActivity extends Activity
    // Add all menu options to the list of cards
    public void addOptions()
    {
+	   orderedCards = new ArrayList<String>();
       for (int i = 0; i < 7; i++)
       {
          // For each element in the map, create a card based on the most used
@@ -262,42 +265,49 @@ public class MainActivity extends Activity
             // For each card set the text, then clear the sorted map. Remove
             // the case just used, and then resort the map
             card.setText(LAB);
+            setMapElement(i, LAB);
             sorted_map.clear();
             map.remove(LAB);
             sorted_map.putAll(map);
             break;
          case MENU:
             card.setText(MENU);
+            setMapElement(i, MENU);
             sorted_map.clear();
             map.remove(MENU);
             sorted_map.putAll(map);
             break;
          case EVENT:
             card.setText(EVENT);
+            setMapElement(i, EVENT);
             sorted_map.clear();
             map.remove(EVENT);
             sorted_map.putAll(map);
             break;
          case DIRECTIONS:
             card.setText(DIRECTIONS);
+            setMapElement(i, DIRECTIONS);
             sorted_map.clear();
             map.remove(DIRECTIONS);
             sorted_map.putAll(map);
             break;
          case OPEN:
             card.setText(OPEN);
+            setMapElement(i, OPEN);
             sorted_map.clear();
             map.remove(OPEN);
             sorted_map.putAll(map);
             break;
          case NEWS:
             card.setText(NEWS);
+            setMapElement(i, NEWS);
             sorted_map.clear();
             map.remove(NEWS);
             sorted_map.putAll(map);
             break;
          case MEALPLAN:
             card.setText(MEALPLAN);
+            setMapElement(i, MEALPLAN);
             sorted_map.clear();
             map.remove(MEALPLAN);
             sorted_map.putAll(map);
@@ -312,63 +322,16 @@ public class MainActivity extends Activity
 
    }
    
-   public String findMapElement(int index)
+   //Store a card's associated string at its correct position within the list.
+   public void setMapElement(int index, String key)
    {
-	   int counter = 0;
-	   String element="";
-	   findCounts();
-	   
-	   while(counter < index)
-	   {
-		   switch (sorted_map.firstEntry().getKey())
-	         {
-	         case LAB:
-	        	 element = LAB;
-	            sorted_map.clear();
-	            map.remove(LAB);
-	            sorted_map.putAll(map);
-	            break;
-	         case MENU:
-	        	 element = MENU;
-	            sorted_map.clear();
-	            map.remove(MENU);
-	            sorted_map.putAll(map);
-	            break;
-	         case EVENT:
-	        	 element = EVENT;
-	            sorted_map.clear();
-	            map.remove(EVENT);
-	            sorted_map.putAll(map);
-	            break;
-	         case DIRECTIONS:
-	        	 element = DIRECTIONS;
-	            sorted_map.clear();
-	            map.remove(DIRECTIONS);
-	            sorted_map.putAll(map);
-	            break;
-	         case OPEN:
-	        	 element = OPEN;
-	            sorted_map.clear();
-	            map.remove(OPEN);
-	            sorted_map.putAll(map);
-	            break;
-	         case NEWS:
-	        	 element = NEWS;
-	            sorted_map.clear();
-	            map.remove(NEWS);
-	            sorted_map.putAll(map);
-	            break;
-	         case MEALPLAN:
-	        	 element = MEALPLAN;
-	            sorted_map.clear();
-	            map.remove(MEALPLAN);
-	            sorted_map.putAll(map);
-	            break;
-
-	         }
-	   }
-	   
-	   return element;
+	   orderedCards.add(index, key);
+   }
+   
+   //Return the card string found at the given position
+   public String findMapElement(int position)
+   {
+	   return orderedCards.get(position);
    }
 
    @Override
