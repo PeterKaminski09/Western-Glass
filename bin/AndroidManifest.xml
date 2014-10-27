@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.allapps"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.glass.permission.DEVELOPMENT" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name="com.example.allapps.MainActivity"
+            android:label="Main Menu" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity
+            android:name="com.example.allapps.StartDirectionsActivity"
+            android:label="Directions" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/directions_voice_trigger" />
+        </activity>
+        <activity
+            android:name="com.example.allapps.NewsArticleActivity"
+            android:label="WKU News" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity android:name="com.example.allapps.MealOptionsActivity" >
+        </activity>
+        <activity
+            android:name="com.example.allapps.DisplayMenuActivity"
+            android:label="Fresh Menu" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity
+            android:name="com.example.allapps.ShowVacancyActivity"
+            android:label="Computer Lab Vacancy" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity android:name="com.example.allapps.LabMenuActivity" >
+        </activity>
+        <activity android:name="com.example.allapps.CampusHoursActivity" >
+        </activity>
+        <activity
+            android:name="com.example.allapps.TodaysEventsActivity"
+            android:label="WKU Events" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity android:name="com.example.allapps.ShowEventsActivity" >
+        </activity>
+        <activity
+            android:name="com.example.allapps.FreshMenuSettings"
+            android:label="@string/title_activity_fresh_menu_settings" >
+        </activity>
+        <activity
+            android:name="com.example.allapps.FacilityHoursActivity"
+            android:label="Open Restaurants" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity
+            android:name="com.example.allapps.MealPlans"
+            android:label="Meal Plans" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+        <activity
+            android:name="com.example.allapps.Microinteractions"
+            android:label="Microinteractions" >
+            <intent-filter>
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.google.android.glass.VoiceTrigger"
+                android:resource="@xml/voice_trigger_command" />
+        </activity>
+    </application>
+
+</manifest>
