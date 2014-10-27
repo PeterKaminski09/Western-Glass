@@ -45,6 +45,7 @@ public class MainActivity extends Activity
    Context context = this;
    //Card list to hold all options
    List<CardBuilder> options;
+   List<String> cardStrings;
    //Scroll view to display all options
    CardScrollView menuScroll;
    //Scroll adapter to supply scroll view with the card list
@@ -83,6 +84,8 @@ public class MainActivity extends Activity
       super.onCreate(savedInstanceState);
 
       options = new ArrayList<CardBuilder>();
+      cardStrings = new ArrayList<String>();
+      
       mainCard = new CardBuilder(this, CardBuilder.Layout.TEXT);
 
       // Set text for the welcome screen/card
@@ -120,7 +123,6 @@ public class MainActivity extends Activity
          {
             
             Intent intent;
-            
             // Now run through the available options and start an event
             // task based on what was clicked.
 
@@ -264,6 +266,7 @@ public class MainActivity extends Activity
          case LAB:
             // For each card set the text, then clear the sorted map. Remove
             // the case just used, and then resort the map
+            cardStrings.add(LAB);
             card.setText(LAB);
             setMapElement(i, LAB);
             sorted_map.clear();
