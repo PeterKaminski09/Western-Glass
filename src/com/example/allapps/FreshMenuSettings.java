@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
@@ -152,7 +151,7 @@ public class FreshMenuSettings extends Activity
 	public void restoreDefault()
 	{
 		this.mealTimes.edit().clear().commit();
-		newCard = new Card(this);
+		newCard = new CardBuilder(this, CardBuilder.Layout.ALERT);
 		newCard.setText("Default settings have been restored.");
 		newCard.setFootnote("Tap to return to the Fresh Menu.");
 		count = 3;

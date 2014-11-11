@@ -33,7 +33,6 @@ import argo.jdom.JdomParser;
 import argo.jdom.JsonRootNode;
 import argo.saj.InvalidSyntaxException;
 
-import com.google.android.glass.app.Card;
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;

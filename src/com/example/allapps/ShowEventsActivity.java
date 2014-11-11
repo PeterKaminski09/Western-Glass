@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollAdapter;
 import com.google.android.glass.widget.CardScrollView;

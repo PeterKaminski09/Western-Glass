@@ -12,7 +12,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.glass.app.Card;
+import com.google.android.glass.widget.CardBuilder;
+
 
 /*The following class chooses a meal to display based on the current time. If the date of use is not during the regular school year, it will notify
  * the user that the menu is unavailable because The Fresh Food Co. does not publish its menu during the summer months. Otherwise, if the current
@@ -34,7 +35,7 @@ import com.google.android.glass.app.Card;
 public class MealOptionsActivity extends Activity 
 {
 	//Card to display the lack of a menu, if necessary
-	Card newCard;
+	CardBuilder newCard;
 	//Create Calendar instance for the current time
 	Calendar now = Calendar.getInstance();
 	//Create Calendar instance for the start of the school year
@@ -93,7 +94,7 @@ public class MealOptionsActivity extends Activity
 		//If menu is unavailable, notify the user.
 		if(!menuAvailable())
 		{
-			newCard = new Card(this);
+			newCard = new CardBuilder(this, CardBuilder.Layout.ALERT);
 			newCard.setText("Fresh Menu is unavailable in summer months.");
 			newCard.setFootnote("Sorry :(");
 			setContentView(newCard.getView());

@@ -37,7 +37,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.glass.app.Card;
 /*
  * This class displays computer lab vacancies for all computer labs on campus. It displays either PC vacancies or Mac vacancies 
  * depending on the user's most recently chosen option. Upon first installation, the user will have to choose either Mac or PC 

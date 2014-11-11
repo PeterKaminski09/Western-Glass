@@ -1,5 +1,7 @@
 package com.example.allapps;
 
+import com.google.android.glass.widget.CardBuilder;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.glass.app.Card;
 /*
  * This class enables the user to turn microinteractions on/off and is only utilized for testing purposes. The last setting 
  * selected is saved using a SharedPreferences object and then referenced throughout the application to determine whether or not
@@ -31,7 +32,7 @@ public class Microinteractions extends Activity
 		micro = getSharedPreferences("Microinteractions", Context.MODE_PRIVATE);
 		editor = micro.edit();
 		//Display welcome card to the user
-		Card newCard = new Card(this);
+		CardBuilder newCard = new CardBuilder(this, CardBuilder.Layout.TITLE);
 		newCard.setText("Tap to change Microinteraction settings");
 		newCard.setFootnote(String.valueOf(on));
 		setContentView(newCard.getView());
@@ -96,7 +97,7 @@ public class Microinteractions extends Activity
 		
 		//updates the value of the card
 		public void showCard(){
-		    Card newCard = new Card(this);
+		    CardBuilder newCard = new CardBuilder(this, CardBuilder.Layout.TITLE);
 	        newCard.setText("Tap to change Microinteraction settings");
 	        newCard.setFootnote(String.valueOf(on));
 	        setContentView(newCard.getView());

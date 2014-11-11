@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 
-import com.google.android.glass.app.Card;
 import com.google.android.glass.widget.CardBuilder;
 import com.google.android.glass.widget.CardScrollView;
 /*
@@ -497,7 +496,7 @@ public class DisplayMenuActivity extends Activity
 	private class DownloadWebpageTask extends AsyncTask<String,Void, ArrayList<String>>
 	{
 		//Initialize a card
-		Card newCard;
+		CardBuilder newCard;
 		
 		//This method is executed before doInBackground and displays a loading screen that remains visible until the menu is
 		//ready.
@@ -612,7 +611,7 @@ public class DisplayMenuActivity extends Activity
 			if(menu.size()>=1)
 			{
 				//Create a new Card
-				newCard = new Card(DisplayMenuActivity.this);
+				newCard = new CardBuilder(DisplayMenuActivity.this, CardBuilder.Layout.TITLE);
 				//Set the Info card depending on the meal ID
 				switch(id)
 				{
@@ -633,7 +632,7 @@ public class DisplayMenuActivity extends Activity
 				for(int counter=0; counter<menu.size(); counter++)
 				{
 					//Create new card
-					newCard = new Card(DisplayMenuActivity.this);
+					newCard = new CardBuilder(DisplayMenuActivity.this, CardBuilder.Layout.TEXT);
 					
 					//Set text of the card to the menu items for that station
 					newCard.setText(menu.get(counter));
@@ -674,7 +673,7 @@ public class DisplayMenuActivity extends Activity
 			else if(menu.size()==0)
 			{
 				//Create new card
-				newCard = new Card(DisplayMenuActivity.this);
+				newCard = new CardBuilder(DisplayMenuActivity.this, CardBuilder.Layout.ALERT);
 				//Notify the user that the menu is unavailable
 				newCard.setText("Menu is not available.");
 				//Remove loading screen
