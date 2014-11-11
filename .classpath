@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/commons-lang3-3.3.2-javadoc.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/commons-lang3-3.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/argo-small-3.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/Users/peterkaminski/Downloads/commons-lang3-3.3.2/commons-lang3-3.3.2-javadoc.jar"/>
-	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/Users/peterkaminski/Downloads/commons-lang3-3.3.2/commons-lang3-3.3.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/jdom-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/jsoup-1.7.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/peterkaminski/Downloads/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar"/>
-	<classpathentry exported="true" kind="var" path="COMMONS_JAR"/>
-	<classpathentry exported="true" kind="var" path="JSOUP_JAR"/>
-	<classpathentry exported="true" kind="var" path="KSOAP_JAR"/>
-	<classpathentry exported="true" kind="var" path="ARGO_JAR"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
