@@ -1,5 +1,6 @@
 package com.example.allapps;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,6 +67,7 @@ public class EventParse {
 		
 		//Find and store the xml code
 		StringBuffer source = new StringBuffer(fetchXML(urlString));
+		Log.d("WOAH", source.toString());
 		
 		//Run through the html and save the events
 		while(source.indexOf("<event>") != -1){
@@ -133,6 +135,7 @@ public class EventParse {
 		//Turn the buffer into a string
 		String xmlSource = xmlCode.toString();
 		int indexofEvent = xmlSource.indexOf("<event>");
+		
 		int endIndex = xmlSource.indexOf("</event>");
 		
 		
@@ -163,8 +166,13 @@ public class EventParse {
 			int timeFinish = contents.indexOf("</start_date>");
 			
 			if (timeStart != 1 && timeFinish != -1){
-				String startTime = contents.substring(timeStart + 12, timeFinish);
-				time += startTime;
+			   String startTime = contents.substring(timeStart + 12, timeFinish);
+               int firstT = startTime.indexOf("T");
+               if(firstT != -1){
+                  startTime = startTime.substring(firstT + 1);
+               }
+               time += convertToCivilian(startTime) + "-";
+               Log.d("START TIME", time);
 			}
 			
 			//Find time of start
@@ -172,20 +180,32 @@ public class EventParse {
 		    timeFinish = contents.indexOf("</end_date>");
 			
 			if (timeStart != 1 && timeFinish != -1){
-				String startTime = contents.substring(timeStart + 10, timeFinish);
-				time += startTime;
+			   String startTime = contents.substring(timeStart + 10, timeFinish);
+               int firstT = startTime.indexOf("T");
+               if(firstT != -1){
+                  startTime = startTime.substring(firstT + 1);
+
+                  System.out.println(convertToCivilian(startTime) + " converted civilian2");
+                  System.out.println(startTime + " Start");
+               }
+               time += convertToCivilian(startTime);
+               Log.d("END TIME", time);
 			}
 			
 			time = time.trim();
-			time = cleanTime(time);
+			Log.d("Final time", time);
+			
+			//Create a new event from the information and add it to our list
+	        Event event = new Event(title, time, location);
+	        events.add(event);
 			
 			
-			//Create a new event from the fetched information and store it into the array list of events. 
-			//If the time is NOT passed, then add the event. 
-			if(!time.equals("Passed")){
-			Event event = new Event(title, time, location);
-			events.add(event);
-			}
+//			//Create a new event from the fetched information and store it into the array list of events. 
+//			//If the time is NOT passed, then add the event. 
+//			if(!time.equals("Passed")){
+//			Event event = new Event(title, time, location);
+//			events.add(event);
+//			}
 			
 			//Since StringBuffer is synchronized we can delete the event and this will prevent an infinite loop. 
 			xmlCode.delete(0, endIndex + 8);

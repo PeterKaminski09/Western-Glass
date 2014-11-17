@@ -611,7 +611,7 @@ public class DisplayMenuActivity extends Activity
 			if(menu.size()>=1)
 			{
 				//Create a new Card
-				newCard = new CardBuilder(DisplayMenuActivity.this, CardBuilder.Layout.TITLE);
+				newCard = new CardBuilder(DisplayMenuActivity.this, CardBuilder.Layout.TEXT);
 				//Set the Info card depending on the meal ID
 				switch(id)
 				{
