@@ -65,8 +65,10 @@ public class TodaysEventsActivity extends Activity
    ValueComparator bvc = new ValueComparator(map);
    TreeMap<String, Integer> sorted_map = new TreeMap<String, Integer>(bvc);
    long startTime, endTime;
-
+   private ArrayList<String> nameList = new ArrayList<String>();
    private int sportCount, artCount, studentCount, campusCount;
+ //ArrayList<String> to store the order of the cards in the main menu
+   ArrayList<String> orderedCards;
 
    // UI Elements
    ProgressBar downloadBar;
@@ -129,7 +131,7 @@ public class TodaysEventsActivity extends Activity
                   Log.d("TYPE STRING OH GOD", type);
                   // Now run through the available options and start an event
                   // task based on what was clicked.
-                  switch (type)
+                  switch (findMapElement(position-1))
                   {
                   case SPORTS_KEY:
                      new EventTask().execute(SPORTS);
@@ -216,24 +218,32 @@ public class TodaysEventsActivity extends Activity
                // For each card set the text, then clear the sorted map. Remove
                // the case just used, and then resort the map
                card.setText(SPORTS_KEY);
+
+               setMapElement(i, SPORTS_KEY);
                sorted_map.clear();
                map.remove(SPORTS_KEY);
                sorted_map.putAll(map);
                break;
             case ARTS_KEY:
                card.setText(ARTS_KEY);
+
+               setMapElement(i, ARTS_KEY);
                sorted_map.clear();
                map.remove(ARTS_KEY);
                sorted_map.putAll(map);
                break;
             case STUDENT_KEY:
                card.setText(STUDENT_KEY);
+
+               setMapElement(i, STUDENT_KEY);
                sorted_map.clear();
                map.remove(STUDENT_KEY);
                sorted_map.putAll(map);
                break;
             case CAMPUS_KEY:
                card.setText(CAMPUS_KEY);
+
+               setMapElement(i, CAMPUS_KEY);
                sorted_map.clear();
                map.remove(CAMPUS_KEY);
                sorted_map.putAll(map);
@@ -393,6 +403,18 @@ public class TodaysEventsActivity extends Activity
             return 1;
          } // returning 0 would merge keys
       }
+   }
+   
+   //Store a card's associated string at its correct position within the list.
+   public void setMapElement(int index, String key)
+   {
+       orderedCards.add(index, key);
+   }
+   
+   //Return the card string found at the given position
+   public String findMapElement(int position)
+   {
+       return orderedCards.get(position);
    }
 
 }
